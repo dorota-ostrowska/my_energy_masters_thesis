@@ -44,11 +44,12 @@ CREATE TABLE Offer (
 
 -- Table: OffersForMeter
 CREATE TABLE OffersForMeter (
+    id_offersformeter int  NOT NULL,
     Offer_id_offer int  NOT NULL,
     Meter_id_meter int  NOT NULL,
     start_date date  NOT NULL,
     end_date date  NULL,
-    CONSTRAINT OffersForMeter_pk PRIMARY KEY (Offer_id_offer,Meter_id_meter)
+    CONSTRAINT OffersForMeter_pk PRIMARY KEY (id_offersformeter)
 );
 
 -- Table: Reading
