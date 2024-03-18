@@ -2,3 +2,4 @@ database_storage/
 .vscode
 thesis.docx
 venv/
+appconfig.json
