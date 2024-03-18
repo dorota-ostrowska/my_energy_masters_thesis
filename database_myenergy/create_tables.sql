@@ -56,7 +56,7 @@ CREATE TABLE OffersForMeter (
 CREATE TABLE Reading (
     id_reading int  NOT NULL,
     time timestamp  NOT NULL,
-    used_energy decimal(2,0)  NOT NULL,
+    used_energy double precision  NOT NULL,
     Meter_id_meter int  NOT NULL,
     CONSTRAINT Reading_pk PRIMARY KEY (id_reading)
 );
