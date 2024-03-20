@@ -51,7 +51,7 @@ def add_reading(id_reading: int, time: str, used_energy: float, meter_id_meter: 
 
 def show_consumption_profile() -> None:
     hours = np.arange(24)
-    energy_consumption = [max(0, ((generate_energy_consumption(hour) + add_noise()) for hour in hours))]
+    energy_consumption = [max(0, (generate_energy_consumption(hour) + add_noise())) for hour in hours]
     plt.plot(hours, energy_consumption, marker='o')
     plt.title('Energy consumption for a household (example)')
     plt.xlabel('hour')
@@ -84,4 +84,4 @@ if conn:  # close a connection
     conn.close()
     print("PostgreSQL connection is closed")
 
-# show_consumption_profile()
+show_consumption_profile()
