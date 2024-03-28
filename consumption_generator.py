@@ -103,5 +103,4 @@ class ConsumptionGenerator:
 dt: datetime = datetime.datetime(2020, 2, 12)
 tm: datetime = datetime.time(1, 0)
 combined_date: datetime = dt.combine(dt, tm)
-timestamp: datetime = datetime.datetime.now()
 consumption_generator: ConsumptionGenerator = ConsumptionGenerator(combined_date)

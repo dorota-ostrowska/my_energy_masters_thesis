@@ -47,3 +47,17 @@ docker build -t swagger_server .
 # starting up a container
 docker run -p 8080:8080 swagger_server
 ```
+
+## Running in local
+
+```bash
+# going to appropriate folder
+cd python-flask-server-generated
+
+# running server
+python3 -m swagger_server
+```
+and open it in your browser:
+```
+http://localhost:8080/api/v3/swagger.json
+```
