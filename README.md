@@ -5,9 +5,9 @@
 </div>
 <br>
 <p align="center">
-    <img src="images/readme/made_with.svg">
-    <img src="images/readme/built_with.svg">
-    <img src="images/readme/to_save.svg">
+    <img src="website/static/images/readme/made_with.svg">
+    <img src="website/static/images/readme/built_with.svg">
+    <img src="website/static/images/readme/to_save.svg">
 </p>
 
 Welcome to my repository housing the code for my master's thesis in Computer Science at PJAIT (Warsaw, Poland). This platform presents an excellent opportunity for me to hone my Fullstack skills while aspiring to make a positive impact on our planet. 🌱

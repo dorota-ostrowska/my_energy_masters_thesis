@@ -3,36 +3,36 @@ info:
   title: Swagger MyEnergy - OpenAPI 3.0
   description: |-
     Api for hosting backend system for the MyEnergy website.
-    
+
     GET (list) - if without param, returns full list of all items without accompanying objects. Is filtered, sorted and paginated by default.
-    
+
     GET (item) - if with /{id} param, returns full,  DTO of an object WITH any required accompanying object (required to limit number of requests).
-    
+
     POST - used to add record, without param. Usually a clean DTO of an object, but may consist of accompanying objects.
-    
+
     PUT - used to edit record with /{id} param, same content as by POST.
-    
+
     DELETE - used to delete object, ie. set deleted_at to the given object and all subordinate objects if cascade deletion is required.
   version: 1.0.1
 servers:
-  - url: https://myenergy.swagger.io/api/v3
+- url: https://myenergy.swagger.io/api/v3
 tags:
-  - name: user
-    description: Operations about client.
-  - name: offer
-    description: Everything about offers.
-  - name: readings
-    description: Access to client's meter readings.
-  - name: ranking
-    description: Everything about ranking.
+- name: user
+  description: Operations about an energy client - an owner of meter 👩 🧑.
+- name: offer
+  description: Everything about available offers 📃.
+- name: readings
+  description: Access to client's meter readings 📊 📈.
+- name: ranking
+  description: Everything about ranking of sustainability 🏆🌎👑.
 paths:
   /user:
     post:
       tags:
-        - user
+      - user
       summary: Creates a user.
       description: This can only be done by the logged out user.
-      operationId: createNewUser
+      operationId: create_new_user
       requestBody:
         description: Created user object.
         content:
@@ -46,50 +46,59 @@ paths:
             schema:
               $ref: '#/components/schemas/Client'
       responses:
-        '200':
+        "200":
           description: Successful operation.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Client'          
+                $ref: '#/components/schemas/Client'
             application/xml:
               schema:
                 $ref: '#/components/schemas/Client'
-        '400':
+        "400":
           description: Invalid input.
-        '422':
+        "422":
           description: Validation exception.
+      x-openapi-router-controller: swagger_server.controllers.user_controller
   /user/login:
     get:
       tags:
-        - user
+      - user
       summary: Logs user into the system.
-      description: ''
-      operationId: loginUser
+      description: ""
+      operationId: login_user
       parameters:
-        - name: username
-          in: query
-          description: The user name for login.
-          required: false
-          schema:
-            type: string
-        - name: password
-          in: query
-          description: The password for login in clear text.
-          required: false
-          schema:
-            type: string
+      - name: username
+        in: query
+        description: The user name for login.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        description: The password for login in clear text.
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
       responses:
-        '200':
+        "200":
           description: Successful operation.
           headers:
             X-Rate-Limit:
               description: Calls per hour allowed by the user.
+              style: simple
+              explode: false
               schema:
                 type: integer
                 format: int32
             X-Expires-After:
               description: Date in UTC when token expires.
+              style: simple
+              explode: false
               schema:
                 type: string
                 format: date-time
@@ -97,64 +106,72 @@ paths:
             application/xml:
               schema:
                 type: string
+                x-content-type: application/xml
             application/json:
               schema:
                 type: string
-        '400':
+        "400":
           description: Invalid username or password supplied.
+      x-openapi-router-controller: swagger_server.controllers.user_controller
   /user/logout:
     get:
       tags:
-        - user
+      - user
       summary: Logs out current logged in user session.
-      description: ''
-      operationId: logoutUser
+      description: ""
+      operationId: logout_user
       parameters: []
       responses:
         default:
           description: Successful operation.
+      x-openapi-router-controller: swagger_server.controllers.user_controller
   /user/{id_client}:
     get:
       tags:
-        - user
+      - user
       summary: Gets client by client ID.
-      description: ''
-      operationId: getUserByClientId
+      description: ""
+      operationId: get_user_by_client_id
       parameters:
-        - name: id_client
-          in: path
-          description: 'The name that needs to be fetched. Use user1 for testing. '
-          required: true
-          schema:
-            type: string
+      - name: id_client
+        in: path
+        description: 'The name that needs to be fetched. Use user1 for testing. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
-        '200':
+        "200":
           description: Successful operation.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Client'          
+                $ref: '#/components/schemas/Client'
             application/xml:
               schema:
                 $ref: '#/components/schemas/Client'
-        '400':
+        "400":
           description: Invalid username supplied.
-        '404':
+        "404":
           description: User not found.
+      x-openapi-router-controller: swagger_server.controllers.user_controller
     put:
       tags:
-        - user
+      - user
       summary: Updates client.
       description: This can only be done by the logged in user.
-      operationId: updateUser
+      operationId: update_user
       parameters:
-        - name: id_client
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: id_client
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       requestBody:
-        description: Update an existent user in the store.
+        description: Update an existent user.
         content:
           application/json:
             schema:
@@ -168,200 +185,251 @@ paths:
       responses:
         default:
           description: Successful operation.
+      x-openapi-router-controller: swagger_server.controllers.user_controller
     delete:
       tags:
-        - user
+      - user
       summary: Deletes client.
       description: This can only be done by the logged in user.
-      operationId: deleteUser
+      operationId: delete_user
       parameters:
-        - name: id_client
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: id_client
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
-        '400':
+        "400":
           description: Invalid username supplied.
-        '404':
+        "404":
           description: User not found.
-  /offer/{id_offersformeter}:
-    post:
-      tags:
-        - offer
-      summary: Updates an existing offer adding a new row to a history table.
-      description: Update an existing offer by offersformeter ID. Update an existent offer in the account. Add a new row in the OffersForMeter table.
-      operationId: updateOffer
-      parameters:
-        - name: id_offersformeter
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: Successful operation.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OffersForMeter'          
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/OffersForMeter'
-        '400':
-          description: Invalid ID supplied.
-        '404':
-          description: Offer not found.
-        '422':
-          description: Validation exception.
+      x-openapi-router-controller: swagger_server.controllers.user_controller
+  /offer/current/{id_client}:
     get:
       tags:
-        - offer
-      summary: Finds offer by IDs.
+      - offer
+      summary: Finds offer by client's ID for all meters of a client.
       description: Returns a single offer (my offer).
-      operationId: getOfferByOffersForMeterId
+      operationId: get_offer_by_clients_id
       parameters:
-        - name: id_offersformeter
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: id_client
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
       responses:
-        '200':
+        "200":
           description: Successful operation.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OffersForMeter'          
+                $ref: '#/components/schemas/OffersForMeter'
             application/xml:
               schema:
                 $ref: '#/components/schemas/OffersForMeter'
-        '400':
+        "400":
           description: Invalid ID supplied.
-        '404':
+        "404":
           description: Offer not found.
+      x-openapi-router-controller: swagger_server.controllers.offer_controller
+  /offer/{id_meter}:
+    post:
+      tags:
+      - offer
+      summary: Updates an existing offer adding a new row to a history table.
+      description: Update an existent offer in the account. Adds a new row in the OffersForMeter table.
+      operationId: update_offer
+      parameters:
+      - name: id_meter
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        description: Adds a new offer for an user.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OffersForMeter'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/OffersForMeter'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OffersForMeter'
+      responses:
+        default:
+          description: Successful operation.
+      x-openapi-router-controller: swagger_server.controllers.user_controller
   /offer/all:
     get:
       tags:
-        - offer
+      - offer
       summary: Returns all available offers.
       description: Returns offers.
-      operationId: getAllOffers
+      operationId: get_all_offers
       responses:
-        '200':
+        "200":
           description: Successful operation.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OfferArray'          
+                $ref: '#/components/schemas/OfferArray'
             application/xml:
               schema:
                 $ref: '#/components/schemas/OfferArray'
-        '404':
-          description: Offers not found.  
+        "404":
+          description: Offers not found.
+      x-openapi-router-controller: swagger_server.controllers.offer_controller
+  /offer/previous/{id_client}:
+    get:
+      tags:
+      - offer
+      summary: Returns all previous and current offers for this client.
+      description: Returns offers.
+      operationId: get_previous_offers
+      parameters:
+      - name: id_client
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Successful operation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OffersForMeterArray'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/OffersForMeterArray'
+        "404":
+          description: Offers not found.
+      x-openapi-router-controller: swagger_server.controllers.offer_controller
   /readings/{id_meter}:
     get:
       tags:
-        - readings
+      - readings
       summary: Returns data to create consumption charts.
       description: Returns readings by meter ID.
-      operationId: getReadingsByMeterId
+      operationId: get_readings_by_meter_id
       parameters:
-        - name: id_meter
-          in: path
-          description: Readings (all table) filtered by meter ID to return.
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: id_meter
+        in: path
+        description: Readings (all table) filtered by meter ID to return.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
       responses:
-        '200':
+        "200":
           description: Successful operation.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReadingArray'          
+                $ref: '#/components/schemas/ReadingArray'
             application/xml:
               schema:
                 $ref: '#/components/schemas/ReadingArray'
-        '400':
+        "400":
           description: Invalid meter ID supplied.
-        '404':
+        "404":
           description: Readings for this meter not found.
+      x-openapi-router-controller: swagger_server.controllers.readings_controller
   /readings/neighborhood/{id_meter}:
     get:
       tags:
-        - readings
+      - readings
       summary: Returns data of consumption in the client's area to compare consumptions.
       description: Returns readings from neighborhood by meter ID (zip code).
-      operationId: getReadingsFromNeighborhoodByMeterId
+      operationId: get_readings_from_neighborhood_by_meter_id
       parameters:
-        - name: id_meter
-          in: path
-          description: Readings (all table) filtered by meter ID to return.
-          required: true
-          schema:
-            type: integer
-            format: int64
+      - name: id_meter
+        in: path
+        description: Readings (all table) filtered by meter ID to return.
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
       responses:
-        '200':
+        "200":
           description: Successful operation.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReadingArray'          
+                $ref: '#/components/schemas/ReadingArray'
             application/xml:
               schema:
                 $ref: '#/components/schemas/ReadingArray'
-        '400':
+        "400":
           description: Invalid meter ID supplied.
-        '404':
+        "404":
           description: Readings for this meter not found.
+      x-openapi-router-controller: swagger_server.controllers.readings_controller
   /ranking/{id_meter}:
     get:
       tags:
-        - ranking
+      - ranking
       summary: Gets points of a user.
       description: Gets points for a meter (user connected with a meter).
-      operationId: getPointsByMeterId
+      operationId: get_points_by_meter_id
       parameters:
-        - name: id_meter
-          in: path
-          description: 'The name that needs to be fetched. Use meter1 for testing. '
-          required: true
-          schema:
-            type: string
+      - name: id_meter
+        in: path
+        description: 'The name that needs to be fetched. Use meter1 for testing. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
-        '200':
+        "200":
           description: Successful operation.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Meter'          
+                $ref: '#/components/schemas/Meter'
             application/xml:
               schema:
                 $ref: '#/components/schemas/Meter'
-        '400':
+        "400":
           description: Invalid username supplied.
-        '404':
+        "404":
           description: User not found.
+      x-openapi-router-controller: swagger_server.controllers.ranking_controller
     put:
       tags:
-        - ranking
+      - ranking
       summary: Adds points to a user account.
       description: Adds points to a user (user connected with a meter).
-      operationId: addPointsByMeterId
+      operationId: add_points_by_meter_id
       parameters:
-        - name: id_meter
-          in: path
-          description: 'The name that needs to be fetched. Use meter1 for testing. '
-          required: true
-          schema:
-            type: string
+      - name: id_meter
+        in: path
+        description: 'The name that needs to be fetched. Use meter1 for testing. '
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       requestBody:
-        description: Update an existent user in the store.
+        description: Update an existent user.
         content:
           application/json:
             schema:
@@ -375,6 +443,7 @@ paths:
       responses:
         default:
           description: Successful operation.
+      x-openapi-router-controller: swagger_server.controllers.ranking_controller
 components:
   schemas:
     Meter:
@@ -388,6 +457,9 @@ components:
           type: integer
           description: Points for pro-ecological behavior.
           example: 10
+      example:
+        id_meter: 10
+        ranking_points: 10
       xml:
         name: meter
     Address:
@@ -395,28 +467,28 @@ components:
       properties:
         id_address:
           type: integer
-          description: A unique ID of an address. Many clients can live at the address. 
+          description: A unique ID of an address. Many clients can live at the address.
           example: 5
         street:
           type: string
           description: A street's name.
-          example: "5th Avenue"
+          example: 5th Avenue
         house_number:
           type: integer
           description: A house's number.
-          example: 9        
+          example: 9
         zip_code:
           type: string
           description: A postal code.
-          example: "01-911"
+          example: 01-911
         city:
           type: string
           description: A city's name.
-          example: "New York"   
+          example: New York
         additional_info:
           type: string
-          description: Floor, flat's number, etc.
-          example: "floor 11"
+          description: "Floor, flat's number, etc."
+          example: floor 11
       xml:
         name: address
     Reading:
@@ -428,13 +500,17 @@ components:
           example: 10
         time:
           type: string
-          format: date-time
           description: An accurate date and time of a reading.
-          example: "2016-06-22 19:10:25-07"
+          format: date-time
         used_energy:
           type: number
-          description: The amount of energy that has been used up to the hour specified in the "time" column (kWh).
+          description: The amount of energy that has been used up to the hour specified
+            in the "time" column (kWh).
           example: 543.5
+      example:
+        id_reading: 10
+        used_energy: 543.5
+        time: 2000-01-23T04:56:07.000+00:00
       xml:
         name: reading
     ReadingArray:
@@ -451,23 +527,30 @@ components:
         name:
           type: string
           description: A name of a client.
-          example: "John"
+          example: John
         surname:
           type: string
           description: A surname of a client.
-          example: "Doe"
+          example: Doe
         pesel:
           type: string
-          description: A unique ID number for a Pole, sth like password number.
+          description: "A unique ID number for a Pole, sth like password number."
           format: "98050436876"
         email:
           type: string
           description: An email of a client.
-          example: "john.doe@example.com"
+          example: john.doe@example.com
         password:
           type: string
           description: A password to the MyEnergy account for a client.
-          example: "P@ssword123!"
+          example: P@ssword123!
+      example:
+        password: P@ssword123!
+        id_client: 10
+        surname: Doe
+        name: John
+        pesel: pesel
+        email: john.doe@example.com
       xml:
         name: client
     Offer:
@@ -479,12 +562,18 @@ components:
           example: 7
         tarrif:
           type: string
-          description: A price plan according to which electricity sellers offer electricity to their customers.
-          example: "G11"
+          description: A price plan according to which electricity sellers offer electricity
+            to their customers.
+          example: G11
         pv_installation:
           type: boolean
-          description: Information whether an energy source, such as a photovoltaic installation, is connected to the meter. 0 - no, 1 - yes.
-          example: 0
+          description: "Information whether an energy source, such as a photovoltaic\
+            \ installation, is connected to the meter. 0 - no, 1 - yes."
+          example: false
+      example:
+        tarrif: G11
+        pv_installation: false
+        id_offer: 7
       xml:
         name: offer
     OfferArray:
@@ -493,7 +582,6 @@ components:
         $ref: '#/components/schemas/Offer'
     OffersForMeter:
       type: object
-      description: A history of offers.
       properties:
         id_offersformeter:
           type: integer
@@ -501,16 +589,23 @@ components:
           example: 4
         start_date:
           type: string
-          format: date-time
           description: Date from which the offer is active.
-          example: "2016-06-22"
+          format: date-time
         end_date:
           type: string
-          format: date-time
           description: Date from which the offer is inactive.
-          example: "2016-06-22"
+          format: date-time
+      description: A history of offers.
+      example:
+        end_date: 2000-01-23T04:56:07.000+00:00
+        id_offersformeter: 4
+        start_date: 2000-01-23T04:56:07.000+00:00
       xml:
         name: offerformeter
+    OffersForMeterArray:
+      type: array
+      items:
+        $ref: '#/components/schemas/OffersForMeter'
   requestBodies:
     Client:
       description: Client object that needs to be added to the db.
@@ -529,4 +624,4 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Reading'
-              
+
