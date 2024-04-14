@@ -1,23 +1,24 @@
 INSERT INTO address(id_address, street, house_number, zip_code, city, additional_info)
 VALUES 
+	(0, '', 0, '000000', '', ''),
 	(1, 'Koszykowa', 64, '03-765', 'Sopot', ''),
 	(2, 'Kwiatowa', 12, '03-353', 'Sopot', '11th level'),
 	(3, 'Jesionowa', 4, '06-245', 'Szczecin', ''),
 	(4, 'Robaczkowa', 76, '06-145', 'Szczecin', 'building A'),
 	(5, 'Brzoskwiniowa', 34, '06-865', 'Szczecin', '');
 
-INSERT INTO client(id_client, name, surname, pesel, address_id_address, email, password)
+INSERT INTO client(id_client, username, name, surname, pesel, address_id_address, email, password)
 VALUES 
-	(1, 'Dawid', 'Sikora', '98050372564', 1, 'dawid.sikora@gmail.com', 'Haslo123!'),
-	(2, 'Aleksandra', 'Nowak', '74638593645', 1, 'aleksandra.nowak@gmail.com', 'Haslo123!'),
-	(3, 'Olga', 'Kowalska', '84736257378', 2, 'olga.kowalska@gmail.com', 'Haslo123!'),
-	(4, 'Tomasz', 'Rogalski', '57639574626', 2, 'tomasz.rogalski@gmail.com', 'Haslo123!'),
-	(5, 'Mateusz', 'Ostrowski', '87536475965', 3, 'mateusz.ostrowski@gmail.com', 'Haslo123!'),
-	(6, 'Dorota', 'Mosakowska', '98765456789', 3, 'dorota.mosakowska@gmail.com', 'Haslo123!'),
-	(7, 'Natalia', 'Pomidor', '78654356782', 4, 'natalia.pomidor@gmail.com', 'Haslo123!'),
-	(8, 'Anna', 'Rakowska', '90873648563', 4, 'anna.rakowska@gmail.com', 'Haslo123!'),
-	(9, 'Bogdan', 'Tokarski', '89765678107', 5, 'bogdan.tokarski@gmail.com', 'Haslo123!'),
-	(10, 'Maria', 'Bananowa', '97648290065', 5, 'maria.bananowa@gmail.com', 'Haslo123!');
+	(1, 'dawidek123', 'Dawid', 'Sikora', '98050372564', 1, 'dawid.sikora@gmail.com', 'Haslo123!'),
+	(2, 'olcia-energy', 'Aleksandra', 'Nowak', '74638593645', 1, 'aleksandra.nowak@gmail.com', 'Haslo123!'),
+	(3, 'olgaaa876', 'Olga', 'Kowalska', '84736257378', 2, 'olga.kowalska@gmail.com', 'Haslo123!'),
+	(4, 'pociag-tomek', 'Tomasz', 'Rogalski', '57639574626', 2, 'tomasz.rogalski@gmail.com', 'Haslo123!'),
+	(5, 'matiooooo', 'Mateusz', 'Ostrowski', '87536475965', 3, 'mateusz.ostrowski@gmail.com', 'Haslo123!'),
+	(6, 'doris123321', 'Dorota', 'Mosakowska', '98765456789', 3, 'dorota.mosakowska@gmail.com', 'Haslo123!'),
+	(7, 'natka-latka', 'Natalia', 'Pomidor', '78654356782', 4, 'natalia.pomidor@gmail.com', 'Haslo123!'),
+	(8, 'ania43rako', 'Anna', 'Rakowska', '90873648563', 4, 'anna.rakowska@gmail.com', 'Haslo123!'),
+	(9, 'bodziooo43', 'Bogdan', 'Tokarski', '89765678107', 5, 'bogdan.tokarski@gmail.com', 'Haslo123!'),
+	(10, 'maryska320', 'Maria', 'Bananowa', '97648290065', 5, 'maria.bananowa@gmail.com', 'Haslo123!');
 
 INSERT INTO meter(id_meter, client_id_client, address_id_address, ranking_points)
 VALUES 

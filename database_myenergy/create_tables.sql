@@ -6,8 +6,8 @@
 CREATE TABLE Address (
     id_address int  NOT NULL,
     street varchar(50)  NOT NULL,
-    house_number int  NOT NULL,
-    zip_code varchar(50)  NOT NULL,
+    house_number varchar(5)  NOT NULL,
+    zip_code varchar(6)  NOT NULL,
     city varchar(50)  NOT NULL,
     additional_info varchar(50)  NULL,
     CONSTRAINT Address_pk PRIMARY KEY (id_address)
@@ -16,12 +16,13 @@ CREATE TABLE Address (
 -- Table: Client
 CREATE TABLE Client (
     id_client int  NOT NULL,
+    username varchar(50)  NOT NULL  UNIQUE,
     name varchar(50)  NOT NULL,
     surname varchar(50)  NOT NULL,
     pesel varchar(11)  NOT NULL,
-    Address_id_address int  NOT NULL,
+    Address_id_address int,
     email varchar(50)  NOT NULL,
-    password varchar(50)  NOT NULL,
+    password text  NOT NULL,
     CONSTRAINT Client_pk PRIMARY KEY (id_client)
 );
 
