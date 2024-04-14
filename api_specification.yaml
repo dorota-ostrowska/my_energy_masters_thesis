@@ -228,10 +228,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OffersForMeter'
+                $ref: '#/components/schemas/OfferForMeter'
             application/xml:
               schema:
-                $ref: '#/components/schemas/OffersForMeter'
+                $ref: '#/components/schemas/OfferForMeter'
         "400":
           description: Invalid ID supplied.
         "404":
@@ -242,7 +242,7 @@ paths:
       tags:
       - offer
       summary: Updates an existing offer adding a new row to a history table.
-      description: Update an existent offer in the account. Adds a new row in the OffersForMeter table.
+      description: Update an existent offer in the account. Adds a new row in the OfferForMeter table.
       operationId: update_offer
       parameters:
       - name: id_meter
@@ -258,13 +258,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OffersForMeter'
+              $ref: '#/components/schemas/OfferForMeter'
           application/xml:
             schema:
-              $ref: '#/components/schemas/OffersForMeter'
+              $ref: '#/components/schemas/OfferForMeter'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/OffersForMeter'
+              $ref: '#/components/schemas/OfferForMeter'
       responses:
         default:
           description: Successful operation.
@@ -311,10 +311,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OffersForMeterArray'
+                $ref: '#/components/schemas/OfferForMeterArray'
             application/xml:
               schema:
-                $ref: '#/components/schemas/OffersForMeterArray'
+                $ref: '#/components/schemas/OfferForMeterArray'
         "404":
           description: Offers not found.
       x-openapi-router-controller: swagger_server.controllers.offer_controller
@@ -580,10 +580,10 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/Offer'
-    OffersForMeter:
+    OfferForMeter:
       type: object
       properties:
-        id_offersformeter:
+        id_offerformeter:
           type: integer
           description: A unique ID of an offer for meter.
           example: 4
@@ -598,14 +598,14 @@ components:
       description: A history of offers.
       example:
         end_date: 2000-01-23T04:56:07.000+00:00
-        id_offersformeter: 4
+        id_offerformeter: 4
         start_date: 2000-01-23T04:56:07.000+00:00
       xml:
         name: offerformeter
-    OffersForMeterArray:
+    OfferForMeterArray:
       type: array
       items:
-        $ref: '#/components/schemas/OffersForMeter'
+        $ref: '#/components/schemas/OfferForMeter'
   requestBodies:
     Client:
       description: Client object that needs to be added to the db.

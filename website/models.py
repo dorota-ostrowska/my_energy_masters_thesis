@@ -12,6 +12,7 @@ class Client(db.Model, UserMixin):
     address_id_address = db.Column(db.Integer, db.ForeignKey('address.id_address'))
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.Text)
+    meters = db.relationship('Meter', backref='meter')
 
     def __repr__(self):
         return f'<Client "{self.name} {self.surname}">'
@@ -28,6 +29,66 @@ class Address(db.Model, UserMixin):
     city = db.Column(db.String(50))
     additional_info = db.Column(db.String(50))
     clients = db.relationship('Client', backref='address')
+    meters = db.relationship('Meter', backref='meter')
 
     def __repr__(self):
         return f'<Address "{self.street}">'
+    
+    def get_id(self):
+        return (self.id_address)
+    
+class Meter(db.Model, UserMixin):
+    __tablename__ = "meter"
+    id_meter = db.Column(db.Integer, primary_key=True)
+    client_id_client = db.Column(db.Integer, db.ForeignKey('client.id_client'))
+    address_id_address = db.Column(db.Integer, db.ForeignKey('address.id_address'))
+    raking_points = db.Column(db.Integer)
+    readings = db.relationship('Reading', backref='reading')
+    offersformeters = db.relationship('OfferForMeter', backref='offerformeter')
+    
+    def __repr__(self):
+        return f'<Meter "{self.id_meter}">'
+    
+    def get_id(self):
+        return (self.id_meter)
+    
+class Reading(db.Model, UserMixin):
+    __tablename__ = "readig"
+    id_reading = db.Column(db.Integer, primary_key=True)
+    time = db.Column(db.DateTime)
+    used_energy = db.Column(db.Float)
+    meters = db.Column(db.Integer, db.ForeignKey('meter.id_meter'))
+
+    def __repr__(self):
+        return f'<Meter "{self.id_reading}">'
+    
+    def get_id(self):
+        return (self.id_reading)
+    
+class Offer(db.Model, UserMixin):
+    __tablename__ = "offer"
+    id_offer = db.Column(db.Integer, primary_key=True)
+    tarrif = db.Column(db.String(50))
+    pv_installation = db.Column(db.Boolean)
+    offersformeters = db.relationship('OfferForMeter', backref='offerformeter')
+
+    def __repr__(self):
+        return f'<Meter "{self.id_offer}">'
+    
+    def get_id(self):
+        return (self.id_offer)
+    
+class OfferForMeter(db.Model, UserMixin):
+    __tablename__ = "offerformeter"
+    id_offerformeter = db.Column(db.Integer, primary_key=True)
+    offer_id_offer = db.Column(db.Integer, db.ForeignKey('offer.id_offer'))
+    meter_id_meter = db.Column(db.Integer, db.ForeignKey('meter.id_meter'))
+    start_date = db.Column(db.Date)
+    end_date = db.Column(db.Date)    
+
+    def __repr__(self):
+        return f'<Meter "{self.id_offerformeter}">'
+    
+    def get_id(self):
+        return (self.id_offerformeter)
+    

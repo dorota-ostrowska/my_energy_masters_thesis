@@ -52,7 +52,7 @@ VALUES
 	(5, 'G12w', 'n'),
 	(6, 'G12w', 'y');
 
-INSERT INTO offersformeter(id_offersformeter, offer_id_offer, meter_id_meter, start_date, end_date)
+INSERT INTO offerformeter(id_offerformeter, offer_id_offer, meter_id_meter, start_date, end_date)
 VALUES 
 	(1, 1, 1, '2020-01-01', '2020-12-31'),
 	(2, 1, 1, '2021-01-01', '2021-06-28'),

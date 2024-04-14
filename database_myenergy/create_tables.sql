@@ -43,14 +43,14 @@ CREATE TABLE Offer (
     CONSTRAINT Offer_pk PRIMARY KEY (id_offer)
 );
 
--- Table: OffersForMeter
-CREATE TABLE OffersForMeter (
-    id_offersformeter int  NOT NULL,
+-- Table: OfferForMeter
+CREATE TABLE OfferForMeter (
+    id_offerformeter int  NOT NULL,
     Offer_id_offer int  NOT NULL,
     Meter_id_meter int  NOT NULL,
     start_date date  NOT NULL,
     end_date date  NULL,
-    CONSTRAINT OffersForMeter_pk PRIMARY KEY (id_offersformeter)
+    CONSTRAINT OfferForMeter_pk PRIMARY KEY (id_offerformeter)
 );
 
 -- Table: Reading
@@ -87,16 +87,16 @@ ALTER TABLE Meter ADD CONSTRAINT Meter_Client
     INITIALLY IMMEDIATE
 ;
 
--- Reference: OffersForMeter_Meter (table: OffersForMeter)
-ALTER TABLE OffersForMeter ADD CONSTRAINT OffersForMeter_Meter
+-- Reference: OfferForMeter_Meter (table: OfferForMeter)
+ALTER TABLE OfferForMeter ADD CONSTRAINT OfferForMeter_Meter
     FOREIGN KEY (Meter_id_meter)
     REFERENCES Meter (id_meter)  
     NOT DEFERRABLE 
     INITIALLY IMMEDIATE
 ;
 
--- Reference: OffersForMeter_Offer (table: OffersForMeter)
-ALTER TABLE OffersForMeter ADD CONSTRAINT OffersForMeter_Offer
+-- Reference: OfferForMeter_Offer (table: OfferForMeter)
+ALTER TABLE OfferForMeter ADD CONSTRAINT OfferForMeter_Offer
     FOREIGN KEY (Offer_id_offer)
     REFERENCES Offer (id_offer)  
     NOT DEFERRABLE 
