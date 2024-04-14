@@ -12,7 +12,7 @@ class Client(db.Model, UserMixin):
     address_id_address = db.Column(db.Integer, db.ForeignKey('address.id_address'))
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.Text)
-    meters = db.relationship('Meter', backref='meter')
+    meters = db.relationship('Meter', backref='meter_for_client')
 
     def __repr__(self):
         return f'<Client "{self.name} {self.surname}">'
@@ -29,7 +29,7 @@ class Address(db.Model, UserMixin):
     city = db.Column(db.String(50))
     additional_info = db.Column(db.String(50))
     clients = db.relationship('Client', backref='address')
-    meters = db.relationship('Meter', backref='meter')
+    meters = db.relationship('Meter', backref='address_of_meter')
 
     def __repr__(self):
         return f'<Address "{self.street}">'
@@ -44,8 +44,8 @@ class Meter(db.Model, UserMixin):
     address_id_address = db.Column(db.Integer, db.ForeignKey('address.id_address'))
     raking_points = db.Column(db.Integer)
     readings = db.relationship('Reading', backref='reading')
-    offersformeters = db.relationship('OfferForMeter', backref='offerformeter')
-    
+    offersformeters = db.relationship('OfferForMeter', backref='offerformeter_meter')
+
     def __repr__(self):
         return f'<Meter "{self.id_meter}">'
     
@@ -53,7 +53,7 @@ class Meter(db.Model, UserMixin):
         return (self.id_meter)
     
 class Reading(db.Model, UserMixin):
-    __tablename__ = "readig"
+    __tablename__ = "reading"
     id_reading = db.Column(db.Integer, primary_key=True)
     time = db.Column(db.DateTime)
     used_energy = db.Column(db.Float)
@@ -70,7 +70,7 @@ class Offer(db.Model, UserMixin):
     id_offer = db.Column(db.Integer, primary_key=True)
     tarrif = db.Column(db.String(50))
     pv_installation = db.Column(db.Boolean)
-    offersformeters = db.relationship('OfferForMeter', backref='offerformeter')
+    offersformeters = db.relationship('OfferForMeter', backref='offerformeter_offer')
 
     def __repr__(self):
         return f'<Meter "{self.id_offer}">'
