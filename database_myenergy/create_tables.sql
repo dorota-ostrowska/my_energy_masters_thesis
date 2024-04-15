@@ -6,8 +6,8 @@
 CREATE TABLE Address (
     id_address int  NOT NULL,
     street varchar(50)  NOT NULL,
-    house_number int  NOT NULL,
-    zip_code varchar(50)  NOT NULL,
+    house_number varchar(5)  NOT NULL,
+    zip_code varchar(6)  NOT NULL,
     city varchar(50)  NOT NULL,
     additional_info varchar(50)  NULL,
     CONSTRAINT Address_pk PRIMARY KEY (id_address)
@@ -16,12 +16,13 @@ CREATE TABLE Address (
 -- Table: Client
 CREATE TABLE Client (
     id_client int  NOT NULL,
+    username varchar(50)  NOT NULL  UNIQUE,
     name varchar(50)  NOT NULL,
     surname varchar(50)  NOT NULL,
     pesel varchar(11)  NOT NULL,
-    Address_id_address int  NOT NULL,
+    Address_id_address int,
     email varchar(50)  NOT NULL,
-    password varchar(50)  NOT NULL,
+    password text  NOT NULL,
     CONSTRAINT Client_pk PRIMARY KEY (id_client)
 );
 
@@ -42,20 +43,21 @@ CREATE TABLE Offer (
     CONSTRAINT Offer_pk PRIMARY KEY (id_offer)
 );
 
--- Table: OffersForMeter
-CREATE TABLE OffersForMeter (
+-- Table: OfferForMeter
+CREATE TABLE OfferForMeter (
+    id_offerformeter int  NOT NULL,
     Offer_id_offer int  NOT NULL,
     Meter_id_meter int  NOT NULL,
     start_date date  NOT NULL,
     end_date date  NULL,
-    CONSTRAINT OffersForMeter_pk PRIMARY KEY (Offer_id_offer,Meter_id_meter)
+    CONSTRAINT OfferForMeter_pk PRIMARY KEY (id_offerformeter)
 );
 
 -- Table: Reading
 CREATE TABLE Reading (
     id_reading int  NOT NULL,
     time timestamp  NOT NULL,
-    used_energy decimal(2,0)  NOT NULL,
+    used_energy double precision  NOT NULL,
     Meter_id_meter int  NOT NULL,
     CONSTRAINT Reading_pk PRIMARY KEY (id_reading)
 );
@@ -85,16 +87,16 @@ ALTER TABLE Meter ADD CONSTRAINT Meter_Client
     INITIALLY IMMEDIATE
 ;
 
--- Reference: OffersForMeter_Meter (table: OffersForMeter)
-ALTER TABLE OffersForMeter ADD CONSTRAINT OffersForMeter_Meter
+-- Reference: OfferForMeter_Meter (table: OfferForMeter)
+ALTER TABLE OfferForMeter ADD CONSTRAINT OfferForMeter_Meter
     FOREIGN KEY (Meter_id_meter)
     REFERENCES Meter (id_meter)  
     NOT DEFERRABLE 
     INITIALLY IMMEDIATE
 ;
 
--- Reference: OffersForMeter_Offer (table: OffersForMeter)
-ALTER TABLE OffersForMeter ADD CONSTRAINT OffersForMeter_Offer
+-- Reference: OfferForMeter_Offer (table: OfferForMeter)
+ALTER TABLE OfferForMeter ADD CONSTRAINT OfferForMeter_Offer
     FOREIGN KEY (Offer_id_offer)
     REFERENCES Offer (id_offer)  
     NOT DEFERRABLE 
