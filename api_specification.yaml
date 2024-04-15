@@ -26,7 +26,7 @@ tags:
 - name: ranking
   description: Everything about ranking of sustainability 🏆🌎👑.
 paths:
-  /user:
+  /register:
     post:
       tags:
       - user
@@ -60,7 +60,7 @@ paths:
         "422":
           description: Validation exception.
       x-openapi-router-controller: swagger_server.controllers.user_controller
-  /user/login:
+  /login:
     get:
       tags:
       - user
@@ -113,7 +113,7 @@ paths:
         "400":
           description: Invalid username or password supplied.
       x-openapi-router-controller: swagger_server.controllers.user_controller
-  /user/logout:
+  /logout:
     get:
       tags:
       - user
