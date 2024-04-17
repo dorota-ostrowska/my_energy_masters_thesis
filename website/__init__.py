@@ -25,7 +25,7 @@ def create_app():
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)
     
-    from .models import Client
+    from .models import Client, Post
     @login_manager.user_loader
     def load_client(id_client):
         return Client.query.get(int(id_client))

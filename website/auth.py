@@ -4,6 +4,7 @@ from .models import Client
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.sql import func
+from .utils import get_next_id
 
 HOME_VIEW = "views.home"
 auth = Blueprint("auth", __name__)
@@ -49,13 +50,8 @@ def register():
         elif len(password_1) < 8:
             flash("Your password is too short, use at least 8 characters.", category="error")
         else:
-            highest_existing_client_id = db.session.query(db.func.max(Client.id_client)).scalar()
-            if highest_existing_client_id is None:
-                new_id = 1
-            else:
-                new_id = highest_existing_client_id + 1
             new_client = Client(
-                id_client=new_id,
+                id_client=get_next_id(db, Client.id_client),
                 username=username,
                 name=name,
                 surname=surname,

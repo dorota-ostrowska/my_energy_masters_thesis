@@ -2,6 +2,12 @@ from . import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
 
+class Post(db.Model):
+    id_post = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.Text, nullable=False)
+    date_created = db.Column(db.DateTime(timezone=True), default=func.now())
+    author = db.Column(db.Integer, db.ForeignKey('client.id_client', ondelete="CASCADE"), nullable=False)
+
 class Client(db.Model, UserMixin):
     __tablename__ = "client"
     id_client = db.Column(db.Integer, primary_key=True)
@@ -13,6 +19,7 @@ class Client(db.Model, UserMixin):
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.Text)
     meters = db.relationship('Meter', backref='meter_for_client')
+    posts = db.relationship('Post', backref='users_posts', passive_deletes=True)
 
     def __repr__(self):
         return f'<Client "{self.name} {self.surname}">'
