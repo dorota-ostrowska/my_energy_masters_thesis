@@ -10,7 +10,6 @@ app.secret_key = "super secret key"
 with open("./appconfig.json", "r") as file:
     json_data: Dict = json.load(file)
 app.config["SQLALCHEMY_DATABASE_URI"] = f"postgresql://{json_data["user"]}:{json_data["password"]}@{json_data["host"]}/{json_data["database"]}"
-# db.init_app(app)
 db = SQLAlchemy(app)
 
 def create_app():
