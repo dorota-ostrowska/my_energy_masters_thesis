@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from . import db
 from .models import Client
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy.sql import func
 
@@ -23,7 +23,7 @@ def login():
                 flash("Password is incorrect.", category="error")
         else:
             flash("Username doesn\'t exist.", category="error")
-    return render_template("login.html")
+    return render_template("login.html", user=current_user)
 
 @auth.route("/register", methods=["GET", "POST"])
 def register():
@@ -69,7 +69,7 @@ def register():
             login_user(new_client, remember=True)
             flash(f"{username} client created!")
             return redirect(url_for(HOME_VIEW))
-    return render_template("register.html")
+    return render_template("register.html", user=current_user)
 
 @auth.route("/logout")
 @login_required
