@@ -1,6 +1,6 @@
-from flask import Blueprint, flash, render_template, request
+from flask import Blueprint, flash, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
-from .models import Post
+from .models import Post, Client
 from . import db
 from .utils import get_next_id
 
@@ -11,12 +11,18 @@ views = Blueprint("views", __name__)
 def home():
     return render_template("home.html", user=current_user)
 
+@views.route("/forum")
+@login_required
+def forum():
+    posts = Post.query.all()
+    return render_template("forum.html", user=current_user, posts=posts)
+
 @views.route("/dashboard")
 @login_required
 def client_logged_in():
     return render_template("dashboard.html", user=current_user)
 
-@views.route("/create-post", methods=["GET", "POST"])
+@views.route("/forum/create-post", methods=["GET", "POST"])
 @login_required
 def create_post():
     if request.method == "POST":
@@ -32,5 +38,29 @@ def create_post():
             db.session.add(post)
             db.session.commit()
             flash("Post created!", category="success")
+            return redirect(url_for('views.forum'))
     return render_template("create_post.html", user=current_user)
     
+@views.route("/forum/delete-post/<id_post>")
+@login_required
+def delete_post(id_post):
+    post = Post.query.filter_by(id_post=id_post).first()
+    if not post:
+        flash("Post doesn't exist.", category="error")
+    elif current_user.id_client != post.author:
+        flash("You don't have permission to delete this post.", category="error")
+    else:
+        db.session.delete(post)
+        db.session.commit()
+        flash("Post deleted.", category="success")
+    return redirect(url_for('views.forum'))
+
+@views.route("/forum/<username>")
+@login_required
+def posts(username):
+    client = Client.query.filter_by(username=username).first()
+    if not client:
+        flash("No user with that username exists.", category="error")
+        return redirect(url_for("views.home"))
+    posts = client.posts
+    return render_template("posts.html", user=current_user, posts=posts, username=username)

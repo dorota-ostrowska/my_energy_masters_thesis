@@ -7,6 +7,14 @@ class Post(db.Model):
     text = db.Column(db.Text, nullable=False)
     date_created = db.Column(db.DateTime(timezone=True), default=func.now())
     author = db.Column(db.Integer, db.ForeignKey('client.id_client', ondelete="CASCADE"), nullable=False)
+    comments = db.relationship('Comment', backref='comments_undner_post')
+
+class Comment(db.Model):
+    id_comment = db.Column(db.Integer, primary_key=True)
+    text = db.Column(db.String(200), nullable=False)
+    date_created = db.Column(db.DateTime(timezone=True), default=func.now())
+    author = db.Column(db.Integer, db.ForeignKey('client.id_client', ondelete="CASCADE"), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id_post', ondelete="CASCADE"), nullable=False)
 
 class Client(db.Model, UserMixin):
     __tablename__ = "client"
@@ -20,12 +28,10 @@ class Client(db.Model, UserMixin):
     password = db.Column(db.Text)
     meters = db.relationship('Meter', backref='meter_for_client')
     posts = db.relationship('Post', backref='users_posts', passive_deletes=True)
+    comments = db.relationship('Comment', backref='users_comments')
 
     def __repr__(self):
         return f'<Client "{self.name} {self.surname}">'
-    
-    def get_id(self):
-        return (self.id_client)
     
 class Address(db.Model, UserMixin):
     __tablename__ = "address"
@@ -40,10 +46,7 @@ class Address(db.Model, UserMixin):
 
     def __repr__(self):
         return f'<Address "{self.street}">'
-    
-    def get_id(self):
-        return (self.id_address)
-    
+
 class Meter(db.Model, UserMixin):
     __tablename__ = "meter"
     id_meter = db.Column(db.Integer, primary_key=True)
@@ -55,9 +58,6 @@ class Meter(db.Model, UserMixin):
 
     def __repr__(self):
         return f'<Meter "{self.id_meter}">'
-    
-    def get_id(self):
-        return (self.id_meter)
     
 class Reading(db.Model, UserMixin):
     __tablename__ = "reading"
@@ -82,9 +82,6 @@ class Offer(db.Model, UserMixin):
     def __repr__(self):
         return f'<Meter "{self.id_offer}">'
     
-    def get_id(self):
-        return (self.id_offer)
-    
 class OfferForMeter(db.Model, UserMixin):
     __tablename__ = "offerformeter"
     id_offerformeter = db.Column(db.Integer, primary_key=True)
@@ -95,7 +92,4 @@ class OfferForMeter(db.Model, UserMixin):
 
     def __repr__(self):
         return f'<Meter "{self.id_offerformeter}">'
-    
-    def get_id(self):
-        return (self.id_offerformeter)
     
