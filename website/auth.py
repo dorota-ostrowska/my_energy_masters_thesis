@@ -56,7 +56,7 @@ def register():
                 name=name,
                 surname=surname,
                 pesel=pesel,
-                address_id_address=0,
+                id_clients_mailing_address=0,
                 email=email,
                 password=str(generate_password_hash(password_1, method="sha256")),
             )
@@ -64,7 +64,7 @@ def register():
             db.session.commit()
             login_user(new_client, remember=True)
             flash(f"{username} client created!")
-            return redirect(url_for(HOME_VIEW))
+            return redirect(url_for("views.client_logged_in"))
     return render_template("register.html", user=current_user)
 
 @auth.route("/logout")

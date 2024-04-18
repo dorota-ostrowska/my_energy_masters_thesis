@@ -6,15 +6,27 @@ class Post(db.Model):
     id_post = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
     date_created = db.Column(db.DateTime(timezone=True), default=func.now())
-    author = db.Column(db.Integer, db.ForeignKey('client.id_client', ondelete="CASCADE"), nullable=False)
-    comments = db.relationship('Comment', backref='comments_undner_post')
+    id_author = db.Column(db.Integer, db.ForeignKey('client.id_client', ondelete="CASCADE"), nullable=False)
+    comments = db.relationship('Comment', backref='comments_under_post')
+
+    def __repr__(self):
+        return f'<Client "{self.author}">'
+    
+    def get_id(self):
+        return (self.id_post)
 
 class Comment(db.Model):
     id_comment = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime(timezone=True), default=func.now())
-    author = db.Column(db.Integer, db.ForeignKey('client.id_client', ondelete="CASCADE"), nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id_post', ondelete="CASCADE"), nullable=False)
+    id_author = db.Column(db.Integer, db.ForeignKey('client.id_client', ondelete="CASCADE"), nullable=False)
+    id_post = db.Column(db.Integer, db.ForeignKey('post.id_post', ondelete="CASCADE"), nullable=False)
+
+    def __repr__(self):
+        return f'<Client "{self.author}">'
+    
+    def get_id(self):
+        return (self.id_comment)
 
 class Client(db.Model, UserMixin):
     __tablename__ = "client"
@@ -23,7 +35,7 @@ class Client(db.Model, UserMixin):
     name = db.Column(db.String(50))
     surname = db.Column(db.String(50))
     pesel = db.Column(db.String(11), unique=True)
-    address_id_address = db.Column(db.Integer, db.ForeignKey('address.id_address'))
+    id_clients_mailing_address = db.Column(db.Integer, db.ForeignKey('address.id_address'))
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.Text)
     meters = db.relationship('Meter', backref='meter_for_client')
@@ -32,6 +44,9 @@ class Client(db.Model, UserMixin):
 
     def __repr__(self):
         return f'<Client "{self.name} {self.surname}">'
+    
+    def get_id(self):
+        return (self.id_client)
     
 class Address(db.Model, UserMixin):
     __tablename__ = "address"
@@ -46,18 +61,24 @@ class Address(db.Model, UserMixin):
 
     def __repr__(self):
         return f'<Address "{self.street}">'
+    
+    def get_id(self):
+        return (self.id_address)
 
 class Meter(db.Model, UserMixin):
     __tablename__ = "meter"
     id_meter = db.Column(db.Integer, primary_key=True)
-    client_id_client = db.Column(db.Integer, db.ForeignKey('client.id_client'))
-    address_id_address = db.Column(db.Integer, db.ForeignKey('address.id_address'))
+    id_owner = db.Column(db.Integer, db.ForeignKey('client.id_client'))
+    id_meters_place_address = db.Column(db.Integer, db.ForeignKey('address.id_address'))
     raking_points = db.Column(db.Integer)
     readings = db.relationship('Reading', backref='reading')
     offersformeters = db.relationship('OfferForMeter', backref='offerformeter_meter')
 
     def __repr__(self):
         return f'<Meter "{self.id_meter}">'
+    
+    def get_id(self):
+        return (self.id_meter)
     
 class Reading(db.Model, UserMixin):
     __tablename__ = "reading"
@@ -75,6 +96,7 @@ class Reading(db.Model, UserMixin):
 class Offer(db.Model, UserMixin):
     __tablename__ = "offer"
     id_offer = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
     tarrif = db.Column(db.String(50))
     pv_installation = db.Column(db.Boolean)
     offersformeters = db.relationship('OfferForMeter', backref='offerformeter_offer')
@@ -82,14 +104,20 @@ class Offer(db.Model, UserMixin):
     def __repr__(self):
         return f'<Meter "{self.id_offer}">'
     
+    def get_id(self):
+        return (self.id_offer)
+    
 class OfferForMeter(db.Model, UserMixin):
     __tablename__ = "offerformeter"
-    id_offerformeter = db.Column(db.Integer, primary_key=True)
-    offer_id_offer = db.Column(db.Integer, db.ForeignKey('offer.id_offer'))
-    meter_id_meter = db.Column(db.Integer, db.ForeignKey('meter.id_meter'))
+    id_offer_for_meter = db.Column(db.Integer, primary_key=True)
+    id_offers_type = db.Column(db.Integer, db.ForeignKey('offer.id_offer'))
+    id_meter = db.Column(db.Integer, db.ForeignKey('meter.id_meter'))
     start_date = db.Column(db.Date)
     end_date = db.Column(db.Date)    
 
     def __repr__(self):
         return f'<Meter "{self.id_offerformeter}">'
+    
+    def get_id(self):
+        return (self.id_offerformeter)
     
