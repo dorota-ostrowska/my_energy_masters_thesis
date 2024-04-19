@@ -13,4 +13,4 @@ jobs:
           pip install black
       - run: |
           cd website
-          black --verbose .
+          black --check --verbose .

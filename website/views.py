@@ -6,10 +6,12 @@ from .utils import get_next_id
 
 views = Blueprint("views", __name__)
 
+
 @views.route("/")
 @views.route("/home")
 def home():
     return render_template("home.html", user=current_user)
+
 
 @views.route("/forum")
 @login_required
@@ -17,10 +19,12 @@ def forum():
     posts = Post.query.all()
     return render_template("forum.html", user=current_user, posts=posts)
 
+
 @views.route("/dashboard")
 @login_required
 def client_logged_in():
     return render_template("dashboard.html", user=current_user)
+
 
 @views.route("/forum/create-post", methods=["GET", "POST"])
 @login_required
@@ -33,14 +37,15 @@ def create_post():
             post = Post(
                 text=post_content,
                 id_author=current_user.id_client,
-                id_post=get_next_id(db, Post.id_post)
-                )
+                id_post=get_next_id(db, Post.id_post),
+            )
             db.session.add(post)
             db.session.commit()
             flash("Post created!", category="success")
-            return redirect(url_for('views.forum'))
+            return redirect(url_for("views.forum"))
     return render_template("create_post.html", user=current_user)
-    
+
+
 @views.route("/forum/delete-post/<id_post>")
 @login_required
 def delete_post(id_post):
@@ -53,7 +58,8 @@ def delete_post(id_post):
         db.session.delete(post)
         db.session.commit()
         flash("Post deleted.", category="success")
-    return redirect(url_for('views.forum'))
+    return redirect(url_for("views.forum"))
+
 
 @views.route("/forum/<username>")
 @login_required
@@ -63,29 +69,31 @@ def posts(username):
         flash("No user with that username exists.", category="error")
         return redirect(url_for("views.forum"))
     posts = client.posts
-    return render_template("posts.html", user=current_user, posts=posts, username=username)
+    return render_template(
+        "posts.html", user=current_user, posts=posts, username=username
+    )
 
 
-@views.route("/forum/create-comment/<id_post>", methods=['POST'])
+@views.route("/forum/create-comment/<id_post>", methods=["POST"])
 @login_required
 def create_comment(id_post):
-    text = request.form.get('text')
+    text = request.form.get("text")
     if not text:
-        flash('Comment cannot be empty.', category='error')
+        flash("Comment cannot be empty.", category="error")
     else:
         post = Post.query.filter_by(id_post=id_post)
         if post:
             comment = Comment(
-                text=text, 
-                id_author=current_user.id_client, 
+                text=text,
+                id_author=current_user.id_client,
                 id_post=id_post,
-                id_comment=get_next_id(db, Comment.id_comment)
-                )
+                id_comment=get_next_id(db, Comment.id_comment),
+            )
             db.session.add(comment)
             db.session.commit()
         else:
-            flash("Post doesn't exist.", category='error')
-    return redirect(url_for('views.forum'))
+            flash("Post doesn't exist.", category="error")
+    return redirect(url_for("views.forum"))
 
 
 @views.route("/forum/delete-comment/<id_comment>")
@@ -93,10 +101,13 @@ def create_comment(id_post):
 def delete_comment(id_comment):
     comment = Comment.query.filter_by(id_comment=id_comment).first()
     if not comment:
-        flash('Comment does not exist.', category='error')
-    elif current_user.id_client != comment.id_author and current_user.id_client != comment.comments_under_post.id_author:
-        flash('You do not have permission to delete this comment.', category='error')
+        flash("Comment does not exist.", category="error")
+    elif (
+        current_user.id_client != comment.id_author
+        and current_user.id_client != comment.comments_under_post.id_author
+    ):
+        flash("You do not have permission to delete this comment.", category="error")
     else:
         db.session.delete(comment)
         db.session.commit()
-    return redirect(url_for('views.forum'))
+    return redirect(url_for("views.forum"))

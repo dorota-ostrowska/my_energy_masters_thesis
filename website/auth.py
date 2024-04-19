@@ -9,6 +9,7 @@ from .utils import get_next_id
 HOME_VIEW = "views.home"
 auth = Blueprint("auth", __name__)
 
+
 @auth.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -23,8 +24,9 @@ def login():
             else:
                 flash("Password is incorrect.", category="error")
         else:
-            flash("Username doesn\'t exist.", category="error")
+            flash("Username doesn't exist.", category="error")
     return render_template("login.html", user=current_user)
+
 
 @auth.route("/register", methods=["GET", "POST"])
 def register():
@@ -44,11 +46,14 @@ def register():
         elif Client.query.filter_by(pesel=pesel).first():
             flash("PESEL is already in use, you have an account.", category="error")
         elif password_1 != password_2:
-            flash("Passwords don\'t match.", category="error")
+            flash("Passwords don't match.", category="error")
         elif len(username) < 6:
             flash("Your username is too short.", category="error")
         elif len(password_1) < 8:
-            flash("Your password is too short, use at least 8 characters.", category="error")
+            flash(
+                "Your password is too short, use at least 8 characters.",
+                category="error",
+            )
         else:
             new_client = Client(
                 id_client=get_next_id(db, Client.id_client),
@@ -66,6 +71,7 @@ def register():
             flash(f"{username} client created!")
             return redirect(url_for("views.client_logged_in"))
     return render_template("register.html", user=current_user)
+
 
 @auth.route("/logout")
 @login_required
