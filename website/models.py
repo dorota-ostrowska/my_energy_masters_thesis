@@ -4,6 +4,7 @@ from sqlalchemy.sql import func
 
 
 class Post(db.Model):
+    __tablename__ = "post"
     id_post = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.Text, nullable=False)
     date_created = db.Column(db.DateTime(timezone=True), default=func.now())
@@ -13,7 +14,7 @@ class Post(db.Model):
         nullable=False,
     )
     comments = db.relationship("Comment", backref="comments_under_post")
-    likes = db.relationship("Like", backref="likes_under_post")
+    likes = db.relationship("Favourite", backref="likes_under_post")
 
     def __repr__(self):
         return f'<Client "{self.author}">'
@@ -23,6 +24,7 @@ class Post(db.Model):
 
 
 class Comment(db.Model):
+    __tablename__ = "comment"
     id_comment = db.Column(db.Integer, primary_key=True)
     text = db.Column(db.String(200), nullable=False)
     date_created = db.Column(db.DateTime(timezone=True), default=func.now())
@@ -42,11 +44,12 @@ class Comment(db.Model):
         return self.id_comment
 
 
-class Like(db.Model):
+class Favourite(db.Model):
+    __tablename__ = "favourite"
     id_like = db.Column(db.Integer, primary_key=True)
     date_created = db.Column(db.DateTime(timezone=True), default=func.now())
     id_author = db.Column(
-        db.Integer, db.ForeignKey("user.id_user", ondelete="CASCADE"), nullable=False
+        db.Integer, db.ForeignKey("client.id_client", ondelete="CASCADE"), nullable=False
     )
     id_post = db.Column(
         db.Integer, db.ForeignKey("post.id_post", ondelete="CASCADE"), nullable=False
@@ -74,7 +77,7 @@ class Client(db.Model, UserMixin):
     meters = db.relationship("Meter", backref="meter_for_client")
     posts = db.relationship("Post", backref="users_posts", passive_deletes=True)
     comments = db.relationship("Comment", backref="users_comments")
-    likes = db.relationship("Like", backref="users_likes")
+    likes = db.relationship("Favourite", backref="users_likes")
 
     def __repr__(self):
         return f'<Client "{self.name} {self.surname}">'

@@ -73,6 +73,15 @@ CREATE TABLE Post (
     CONSTRAINT Post_pk PRIMARY KEY (id_post)
 );
 
+-- Table: Favourite
+CREATE TABLE Favourite (
+    id_like int  NOT NULL,
+    date_created timestamp  NOT NULL,
+    id_author int  NOT NULL,
+    id_post int  NOT NULL,
+    CONSTRAINT Favourite_pk PRIMARY KEY (id_like)
+);
+
 -- Table: Reading
 CREATE TABLE Reading (
     id_reading int  NOT NULL,
@@ -155,5 +164,20 @@ ALTER TABLE Reading ADD CONSTRAINT Reading_Meter
     INITIALLY IMMEDIATE
 ;
 
--- End of file.
+-- Reference: Favourite_Client (table: Favourite)
+ALTER TABLE Favourite ADD CONSTRAINT Favourite_Client
+    FOREIGN KEY (id_author)
+    REFERENCES Client (id_client)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
 
+-- Reference: Favourite_Post (table: Favourite)
+ALTER TABLE Favourite ADD CONSTRAINT Favourite_Post
+    FOREIGN KEY (id_post)
+    REFERENCES Post (id_post)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- End of file.
