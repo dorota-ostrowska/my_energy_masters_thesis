@@ -116,8 +116,8 @@ def delete_comment(id_comment):
 @views.route("/forum/like/<id_post>", methods=['POST'])
 @login_required
 def like(id_post):
-    post = Post.query.filter_by(id=id_post).first()
-    like = Like.query.filter_by(
+    post = Post.query.filter_by(id_post=id_post).first()
+    like = Favourite.query.filter_by(
         id_author=current_user.id_client, 
         id_post=id_post
         ).first()

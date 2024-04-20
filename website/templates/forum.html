@@ -9,7 +9,11 @@
             rel="stylesheet"
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
             crossorigin="anonymous" />
+        <script
+            src="https://kit.fontawesome.com/999ca2bb93.js"
+            crossorigin="anonymous"></script>
     </head>
+
     <body>
         <h1 align="center">MyEnergy Forum</h1>
         <br />
@@ -27,12 +31,24 @@
                     class="card-header d-flex justify-content-between align-items-center">
                     <a
                         href="/forum/{{post.users_posts.username}}">{{post.users_posts.username}}</a>
-                        {% if user.id_client == post.id_author %}
-                    <div class="btn-group">
-                        <a href="/forum/delete-post/{{post.id_post}}">🗑️</a>
+                    <div>
+                        <span id="likes-count-{{post.id_post}}">{{
+                            post.likes|length }}</span> {% if user.id_client in
+                        post.likes|map(attribute="id_author")|list %}
+                        <i class="fas fa-thumbs-up"
+                            id="like-button-{{post.id_post}}"
+                            onclick="like({{post.id_post}})"></i>
+                        {% else %}
+                        <i class="far fa-thumbs-up"
+                            id="like-button-{{post.id_post}}"
+                            onclick="like({{post.id_post}})"></i>
+                        {% endif %} {% if user.id_client == post.id_author %}
+                        <div class="btn-group">
+                            <a
+                                href="/forum/delete-post/{{post.id_post}}">🗑️</a>
+                        </div>
+                        {% endif %}
                     </div>
-                    {% endif %}
-
                 </div>
                 <div class="card-body">
                     <div class="card-text">{{post.text}}</div>
@@ -81,4 +97,7 @@
         <br />
         {% endfor %}
     </body>
+    <script
+        type="text/javascript"
+        src="{{url_for('static', filename='index.js')}}"></script>
 </html>
