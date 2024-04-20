@@ -3,3 +3,4 @@ database_storage/
 thesis.docx
 venv/
 appconfig.json
+__pycache__/
