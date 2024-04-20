@@ -113,25 +113,29 @@ def delete_comment(id_comment):
     return redirect(url_for("views.forum"))
 
 
-@views.route("/forum/like/<id_post>", methods=['POST'])
+@views.route("/forum/like/<id_post>", methods=["POST"])
 @login_required
 def like(id_post):
     post = Post.query.filter_by(id_post=id_post).first()
     like = Favourite.query.filter_by(
-        id_author=current_user.id_client, 
-        id_post=id_post
-        ).first()
+        id_author=current_user.id_client, id_post=id_post
+    ).first()
     if not post:
-        return jsonify({'error': 'Post does not exist.'}, 400)
+        return jsonify({"error": "Post does not exist."}, 400)
     elif like:
         db.session.delete(like)
         db.session.commit()
     else:
         like = Favourite(
-            id_author=current_user.id_client, 
+            id_author=current_user.id_client,
             id_post=id_post,
-            id_like=get_next_id(db, Favourite.id_like)
-            )
+            id_like=get_next_id(db, Favourite.id_like),
+        )
         db.session.add(like)
         db.session.commit()
-    return jsonify({"likes": len(post.likes), "liked": current_user.id_client in map(lambda x: x.id_author, post.likes)})
+    return jsonify(
+        {
+            "likes": len(post.likes),
+            "liked": current_user.id_client in map(lambda x: x.id_author, post.likes),
+        }
+    )

@@ -49,7 +49,9 @@ class Favourite(db.Model):
     id_like = db.Column(db.Integer, primary_key=True)
     date_created = db.Column(db.DateTime(timezone=True), default=func.now())
     id_author = db.Column(
-        db.Integer, db.ForeignKey("client.id_client", ondelete="CASCADE"), nullable=False
+        db.Integer,
+        db.ForeignKey("client.id_client", ondelete="CASCADE"),
+        nullable=False,
     )
     id_post = db.Column(
         db.Integer, db.ForeignKey("post.id_post", ondelete="CASCADE"), nullable=False

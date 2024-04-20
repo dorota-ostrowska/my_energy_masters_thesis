@@ -77,8 +77,8 @@ CREATE TABLE Post (
 CREATE TABLE Favourite (
     id_like int  NOT NULL,
     date_created timestamp  NOT NULL,
-    id_author int  NOT NULL,
-    id_post int  NOT NULL,
+    id_author int  NULL,
+    id_post int  NULL,
     CONSTRAINT Favourite_pk PRIMARY KEY (id_like)
 );
 
