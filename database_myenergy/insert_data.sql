@@ -7,7 +7,7 @@ VALUES
 	(4, 'Robaczkowa', 76, '06-145', 'Szczecin', 'building A'),
 	(5, 'Brzoskwiniowa', 34, '06-865', 'Szczecin', '');
 
-INSERT INTO client(id_client, username, name, surname, pesel, address_id_address, email, password)
+INSERT INTO client(id_client, username, name, surname, pesel, id_clients_mailing_address, email, password)
 VALUES 
 	(1, 'dawidek123', 'Dawid', 'Sikora', '98050372564', 1, 'dawid.sikora@gmail.com', 'Haslo123!'),
 	(2, 'olcia-energy', 'Aleksandra', 'Nowak', '74638593645', 1, 'aleksandra.nowak@gmail.com', 'Haslo123!'),
@@ -20,7 +20,7 @@ VALUES
 	(9, 'bodziooo43', 'Bogdan', 'Tokarski', '89765678107', 5, 'bogdan.tokarski@gmail.com', 'Haslo123!'),
 	(10, 'maryska320', 'Maria', 'Bananowa', '97648290065', 5, 'maria.bananowa@gmail.com', 'Haslo123!');
 
-INSERT INTO meter(id_meter, client_id_client, address_id_address, ranking_points)
+INSERT INTO meter(id_meter, id_owner, id_meters_place_address, ranking_points)
 VALUES 
 	(1, 1, 1, 67),
 	(2, 1, 1, 54),
@@ -43,16 +43,16 @@ VALUES
 	(19, 9, 4, 24),
 	(20, 10, 5, 65);
 
-INSERT INTO offer(id_offer, tarrif, pv_installation)
+INSERT INTO offer(id_offer, name, tarrif, pv_installation)
 VALUES 
-	(1, 'G11', 'n'),
-	(2, 'G11', 'y'),
-	(3, 'G12', 'n'),
-	(4, 'G12', 'y'),
-	(5, 'G12w', 'n'),
-	(6, 'G12w', 'y');
+	(1, 'oszczedna zwykla', 'G11', 'n'),
+	(2, 'oszczedna pv', 'G11', 'y'),
+	(3, 'oszczedna zwykla', 'G12', 'n'),
+	(4, 'oszczedna pv', 'G12', 'y'),
+	(5, 'oszczedna zwykla', 'G12w', 'n'),
+	(6, 'oszczedna pv', 'G12w', 'y');
 
-INSERT INTO offerformeter(id_offerformeter, offer_id_offer, meter_id_meter, start_date, end_date)
+INSERT INTO offerformeter(id_offer_for_meter, id_offers_type, id_meter, start_date, end_date)
 VALUES 
 	(1, 1, 1, '2020-01-01', '2020-12-31'),
 	(2, 1, 1, '2021-01-01', '2021-06-28'),

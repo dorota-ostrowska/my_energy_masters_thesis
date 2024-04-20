@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{username}}'s posts</title>
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous" />
+    </head>
+    <body>
+        <h1 align="center">{{username}}'s posts</h1>
+        <br />
+        <div align="center">
+            <a href="/forum"><button type="button"
+                    class="btn btn-lg btn-secondary">Back</button></a>
+        </div>
+        <br />
+        <div align="center"></div>
+        <div id="posts">
+            {% for post in posts %}
+            <div class="card border-dark">
+                <div
+                    class="card-header d-flex justify-content-between align-items-center">
+                    <a
+                        href="/forum/{{post.users_posts.username}}">{{post.users_posts.username}}</a>
+                    {% if user.id_client == post.id_author %}
+                    <div class="btn-group">
+                        <a href="/forum/delete-post/{{post.id_post}}">🗑️</a>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <div class="card-text">{{post.text}}</div>
+                </div>
+                <div class="collapse" id="comments-{{post.id_post}}">
+                    <div class="card">
+                        <div class="card-body"
+                            id="comments-expanded-{{post.id_post}}">
+                            {% for comment in post.comments %}
+                            <div
+                                class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a
+                                        href="/forum/comments/{{comment.users_comments.username}}">{{comment.users_comments.username}}</a>:{{comment.text}}
+                                </div>
+                                <div>
+                                    <small class="text-muted">
+                                        {{comment.date_created}}</small>
+                                    {% if user.id_client == comment.id_author or
+                                    user.id_client ==
+                                    post.id_author %}
+                                    <div class="btn-group">
+                                        <button
+                                            type="button"
+                                            class="btn btn-sm btn-primary dropdown-toggle"
+                                            data-bs-toggle="dropdown"></button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a
+                                                    href="/forum/delete-comment/{{comment.id_comment}}"
+                                                    class="dropdown-item">Delete</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <p class="card-text">
+                    {% if post.comments|length > 0 %}
+                    <a
+                        data-bs-toggle="collapse"
+                        href="#comments-{{post.id_post}}"
+                        role="button">
+                        <small>View {{post.comments|length}} comments</small>
+                    </a>
+                    {% else %}
+                    <small class="text-muted">No comments</small>
+                    {% endif %}
+                </p>
+                <form
+                    class="input-group mb-3"
+                    method="POST"
+                    action="/forum/create-comment/{{post.id_post}}">
+                    <input
+                        type="text"
+                        id="text"
+                        name="text"
+                        class="form-control"
+                        placeholder="Comment something!" />
+                    <button type="submit"
+                        class="btn btn-primary">Comment</button>
+                </form>
+                <div class="card-footer text-muted">{{post.date_created}}</div>
+            </div>
+        </div>
+        <br />
+        {% endfor %}
+    </body>
+</html>
