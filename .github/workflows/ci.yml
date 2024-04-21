@@ -20,4 +20,4 @@ jobs:
       - name: Run flake
         run: |
           cd ..
-          flake8 --config .flake8 
+          flake8 --extend-ignore E203,E402,W503 --max-line-length 120
