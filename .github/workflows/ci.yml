@@ -8,12 +8,11 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: 3.12
-      - name: Build environment and install necessary dependencies
+      - name: Install necessary dependencies to lint
         run: |
-          python -m venv venv
-          source venv/bin/activate
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install black
+          pip install flake8
       - name: Run black
         run: |
           cd website
@@ -22,4 +21,3 @@ jobs:
         run: |
           cd ..
           flake8    
-          
