@@ -14,3 +14,7 @@ jobs:
       - run: |
           cd website
           black --check --verbose .
+
+      - run: |
+          pip install pyright
+      - uses: jakebailey/pyright-action@v1
