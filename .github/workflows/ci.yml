@@ -19,7 +19,5 @@ jobs:
           black --check --verbose .         
       - name: Run flake
         run: |
-          echo $(ls)
           cd ..
-          echo $(ls)
           flake8 --config .flake8 
