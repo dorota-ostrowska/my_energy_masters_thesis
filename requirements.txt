@@ -1,7 +1,8 @@
 numpy
 matplotlib
 psycopg2
-
+black
+flake8
 connexion[swagger-ui]==2.14.2
 python_dateutil == 2.6.0
 setuptools >= 21.0.0

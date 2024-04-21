@@ -3,7 +3,6 @@ from . import db
 from .models import Client
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy.sql import func
 from .utils import get_next_id
 
 HOME_VIEW = "views.home"

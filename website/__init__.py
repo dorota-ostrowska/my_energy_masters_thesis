@@ -1,6 +1,5 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from os import path
 from flask_login import LoginManager
 import json
 from typing import Dict
@@ -29,7 +28,7 @@ def create_app():
     login_manager.login_view = "auth.login"
     login_manager.init_app(app)
 
-    from .models import Client, Post
+    from .models import Client
 
     @login_manager.user_loader
     def load_client(id_client):
