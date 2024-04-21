@@ -7,14 +7,14 @@ from typing import List, Optional, Dict, Tuple
 
 class ConsumptionGenerator:
     def __init__(self, reading_date: datetime.datetime) -> None:
-        self.db_connection: Optional[psycopg2.extensions.connection] 
-        self.db_cursor: Optional[psycopg2.extensions.cursor] 
+        self.db_connection: Optional[psycopg2.extensions.connection]
+        self.db_cursor: Optional[psycopg2.extensions.cursor]
         self.db_connection, self.db_cursor = self._open_connection_with_db()
         if self.db_connection and self.db_cursor:
             self.generate_readings(reading_date)
         self._close_connection_with_db()
 
-    def _open_connection_with_db(self) -> Tuple[Optional[psycopg2.extensions.cursor], 
+    def _open_connection_with_db(self) -> Tuple[Optional[psycopg2.extensions.cursor],
                                                 Optional[psycopg2.extensions.cursor]]:
         """
         Opens a connection with PostgreSQL database.
@@ -29,7 +29,7 @@ class ConsumptionGenerator:
         except (Exception) as error:
             print("Failed to connect to database,", error)
             return None, None
-        
+
     def _close_connection_with_db(self) -> None:
         """
         Closes a connection with PostgreSQL database.
