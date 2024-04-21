@@ -78,7 +78,8 @@ class ConsumptionGenerator:
         Adds reading to the Reading table.
         """
         try: 
-            query: str = f"INSERT INTO reading(id_reading, time, used_energy, meter_id_meter) VALUES ({id_reading}, '{str(time)}', {used_energy}, {meter_id_meter});"
+            query: str = f"""INSERT INTO reading(id_reading, time, used_energy, meter_id_meter) 
+            VALUES ({id_reading}, '{str(time)}', {used_energy}, {meter_id_meter});"""
             self.db_cursor.execute(query)
             print("Record inserted successfully into the Reading table")
         except (Exception) as error:
