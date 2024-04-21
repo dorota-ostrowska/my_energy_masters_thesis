@@ -19,5 +19,7 @@ jobs:
           black --check --verbose .         
       - name: Run flake
         run: |
+          echo $(pwd)
           cd ..
+          echo $(pwd)
           flake8 --config .flake8 
