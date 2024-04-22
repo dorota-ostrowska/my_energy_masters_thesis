@@ -26,4 +26,3 @@ def get_task_description_1(number_of_rooms: int) -> str:
     complete_task = (
         raw_text + "\n" + get_savings_on_bulbs(number_of_rooms))
     return complete_task
-

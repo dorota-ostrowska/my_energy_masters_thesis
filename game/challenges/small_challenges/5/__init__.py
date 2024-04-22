@@ -17,7 +17,7 @@ def _check_weather(city: str) -> str:
         temperature = response_json["current"]["temp_c"]
         if humidity > 60:
             return (
-                "The weather conditions aren't good to dry your washing, it's too wet. "
+                f"The weather conditions aren't good to dry your washing, it's too wet ({humidity}%). "
                 "Try to do this task another day! 😉"
             )
         elif wind > 30:
@@ -25,13 +25,13 @@ def _check_weather(city: str) -> str:
                 "The weather conditions aren't good to dry your washing, it's too windy. "
                 "Try to do this task another day! 😉"
             )
-        elif temperature > 10:
+        elif temperature < 10:
             return (
                 "The weather conditions aren't good to dry your washing, it's too cold. "
                 "Try to do this task another day! 😉"
             )
         else:
-            return "The weather conditions are great to dry your washing 💚."
+            return "The weather conditions are great to dry your washing today 💚."
     else:
         return "You have to check the weather conditions on your own because there is a problem with app."
 
@@ -48,3 +48,5 @@ def get_task_description_5(users_city: str) -> str:
         raw_text + "\nDaily weather check ⛅💦💨:\n" + _check_weather(users_city)
     )
     return complete_task
+
+print(get_task_description_5("Warsaw"))
