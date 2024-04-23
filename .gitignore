@@ -5,4 +5,4 @@ venv/
 appconfig.json
 **/__pycache__/
 **/.DS_Store
-game/challenges/small_challenges/5/secret.py
+game/challenges/small_challenges/dry_laundry_outside/secret.py
