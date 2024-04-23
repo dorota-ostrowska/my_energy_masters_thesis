@@ -15,7 +15,7 @@ def get_savings_on_bulbs(number_of_rooms: int) -> str:
     f"this gives the amounts {cost_for_household_oldtype_bulb} PLN and {cost_for_household_led} PLN, " \
     f"respectively. You can save even {cost_for_household_oldtype_bulb-cost_for_household_led} zlotys per year."
 
-def get_task_description_1(number_of_rooms: int) -> str:
+def get_task_description_bulbs(number_of_rooms: int) -> str:
     """
     Returns a task description.
     """

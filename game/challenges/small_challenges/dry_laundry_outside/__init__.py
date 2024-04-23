@@ -36,7 +36,7 @@ def _check_weather(city: str) -> str:
         return "You have to check the weather conditions on your own because there is a problem with app."
 
 
-def get_task_description_5(users_city: str) -> str:
+def get_task_description_laundry(users_city: str) -> str:
     """
     Returns a task description with information on weather conditions.
     """

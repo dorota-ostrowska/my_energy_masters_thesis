@@ -1,1 +1,0 @@
-Configure your computer to automatically go to sleep after an extended period of inactivity.
