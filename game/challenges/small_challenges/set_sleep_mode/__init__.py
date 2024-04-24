@@ -1,4 +1,6 @@
 from configuration_guide import WINDOWS, MAC
+
+
 def get_task_description_sleep_mode() -> str:
     """
     Returns a task description.
