@@ -41,12 +41,10 @@ def get_task_description_laundry(users_city: str) -> str:
     Returns a task description with information on weather conditions.
     """
     with open(
-        "game/challenges/small_challenges/5/task_description.txt", "r", encoding="utf-8"
+        "game/challenges/small_challenges/dry_laundry_outside/task_description.txt", "r", encoding="utf-8"
     ) as file:
         raw_text = file.read()
     complete_task = (
         raw_text + "\nDaily weather check ⛅💦💨:\n" + _check_weather(users_city)
     )
     return complete_task
-
-print(get_task_description_5("Warsaw"))

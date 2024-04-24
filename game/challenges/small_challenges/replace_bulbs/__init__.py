@@ -20,7 +20,7 @@ def get_task_description_bulbs(number_of_rooms: int) -> str:
     Returns a task description.
     """
     with open(
-        "game/challenges/small_challenges/1/task_description.txt", "r", encoding="utf-8"
+        "game/challenges/small_challenges/replace_bulbs/task_description.txt", "r", encoding="utf-8"
     ) as file:
         raw_text = file.read()
     complete_task = (
