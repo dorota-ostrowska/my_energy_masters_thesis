@@ -24,8 +24,3 @@ jobs:
         run: |
           cd ..
           flake8 --extend-ignore E203,W291,E402,W503 --max-line-length 120
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
