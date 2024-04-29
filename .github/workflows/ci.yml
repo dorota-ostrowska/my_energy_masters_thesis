@@ -1,4 +1,4 @@
-name: Clean Code
+name: clean code
 on:
   push:
     branches:
@@ -12,28 +12,28 @@ jobs:
       - uses: actions/setup-python@v1
         with:
           python-version: 3.12
-      - name: Install necessary dependencies to lint
+      - name: install necessary dependencies to lint
         run: |
           python -m pip install --upgrade pip
           pip install black
           pip install flake8
-      - name: Run black
+      - name: run black
         run: |
           cd website
           black --check --verbose .         
-      - name: Run flake8
+      - name: run flake8
         run: |
           cd ..
           flake8 --extend-ignore E203,W291,E402,W503 --max-line-length 120
   sonarcloud:
-    name: Build Sonar Cloud
+    name: build sonar cloud
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
         # Disabling shallow clone is recommended for improving relevancy of reporting
         fetch-depth: 0
-    - name: SonarCloud Scan
+    - name: sonar cloud scan
       uses: sonarsource/sonarcloud-github-action@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
