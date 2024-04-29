@@ -1,10 +1,10 @@
-name: Python Linting
+name: Clean Code
 on:
   push:
     branches:
       - "*"
 jobs:
-  build:
+  linting:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,7 +20,20 @@ jobs:
         run: |
           cd website
           black --check --verbose .         
-      - name: Run flake
+      - name: Run flake8
         run: |
           cd ..
           flake8 --extend-ignore E203,W291,E402,W503 --max-line-length 120
+  sonarcloud:
+    name: Build Sonar Cloud
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        # Disabling shallow clone is recommended for improving relevancy of reporting
+        fetch-depth: 0
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
