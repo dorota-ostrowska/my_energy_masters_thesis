@@ -22,29 +22,34 @@ def _check_weather(city: str) -> str:
             )
         elif wind > 30:
             return (
-                "The weather conditions aren't good to dry your washing, it's too windy. "
+                f"The weather conditions aren't good to dry your washing, it's too windy ({wind} kmph). "
                 "Try to do this task another day! 😉"
             )
         elif temperature < 10:
             return (
-                "The weather conditions aren't good to dry your washing, it's too cold. "
+                f"The weather conditions aren't good to dry your washing, it's too cold ({temperature}℃). "
                 "Try to do this task another day! 😉"
             )
         else:
-            return "The weather conditions are great to dry your washing today 💚."
+            return (
+                "The weather conditions are great to dry your washing today 💚. "
+                f"\n💧 humidity: {humidity}% 💦 wind: {wind} kmph 💨 temperature: {temperature}℃ 🌡️"
+            )
     else:
         return "You have to check the weather conditions on your own because there is a problem with app."
 
 
 def get_task_description_laundry(users_city: str) -> str:
     """
-    Returns a task description with information on weather conditions.
+    Returns a task description with information on weather conditions in user's location.
     """
     with open(
-        "game/challenges/small_challenges/dry_laundry_outside/task_description.txt", "r", encoding="utf-8"
+        "game/challenges/small_challenges/dry_laundry_outside/task_description.txt",
+        "r",
+        encoding="utf-8",
     ) as file:
         raw_text = file.read()
     complete_task = (
-        raw_text + "\nDaily weather check ⛅💦💨:\n" + _check_weather(users_city)
+        raw_text + "\nDaily weather check ⛅:\n" + _check_weather(users_city)
     )
     return complete_task
