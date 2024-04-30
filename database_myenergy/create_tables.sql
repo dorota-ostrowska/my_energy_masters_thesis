@@ -41,7 +41,10 @@ CREATE TABLE Meter (
     id_meter int  NOT NULL,
     id_owner int  NOT NULL,
     id_meters_place_address int  NOT NULL,
+    member_of_challange  boolean  NOT NULL,
     ranking_points int  NOT NULL,
+    number_of_rooms  int  NULL,
+    number_of_residents  int  NULL,
     CONSTRAINT Meter_pk PRIMARY KEY (id_meter)
 );
 
@@ -77,8 +80,7 @@ CREATE TABLE Post (
 CREATE TABLE Favourite (
     id_like int  NOT NULL,
     date_created timestamp  NOT NULL,
-    id_author int  NULL,
-    id_post int  NULL,
+    id_author int  NOT NULL,
     CONSTRAINT Favourite_pk PRIMARY KEY (id_like)
 );
 
@@ -89,6 +91,26 @@ CREATE TABLE Reading (
     used_energy decimal(2,0)  NOT NULL,
     id_meter int  NOT NULL,
     CONSTRAINT Reading_pk PRIMARY KEY (id_reading)
+);
+
+-- Table: Challange
+CREATE TABLE Challange (
+    id_challange int  NOT NULL,
+    name varchar(50)  NOT NULL,
+    type_small_big char(1)  NOT NULL,
+    CONSTRAINT Challange_pk PRIMARY KEY (id_challange)
+);
+
+-- Table: CustomizedChallange
+CREATE TABLE CustomizedChallange (
+    id_meter int  NOT NULL,
+    id_challange int  NOT NULL,
+    task_description text  NOT NULL,
+    start_date timestamp  NULL,
+    end_date timestamp  NULL,
+    is_done char(1)  NOT NULL,
+    points_scored int  NOT NULL,
+    CONSTRAINT CustomizedChallange_pk PRIMARY KEY (id_meter,id_challange)
 );
 
 -- foreign keys
@@ -176,6 +198,22 @@ ALTER TABLE Favourite ADD CONSTRAINT Favourite_Client
 ALTER TABLE Favourite ADD CONSTRAINT Favourite_Post
     FOREIGN KEY (id_post)
     REFERENCES Post (id_post)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: CustomizedChallange_Challange (table: CustomizedChallange)
+ALTER TABLE CustomizedChallange ADD CONSTRAINT CustomizedChallange_Challange
+    FOREIGN KEY (id_challange)
+    REFERENCES Challange (id_challange)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: CustomizedChallange_Meter (table: CustomizedChallange)
+ALTER TABLE CustomizedChallange ADD CONSTRAINT CustomizedChallange_Meter
+    FOREIGN KEY (id_meter)
+    REFERENCES Meter (id_meter)  
     NOT DEFERRABLE 
     INITIALLY IMMEDIATE
 ;

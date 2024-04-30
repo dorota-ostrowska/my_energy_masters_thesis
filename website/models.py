@@ -13,8 +13,8 @@ class Post(db.Model):
         db.ForeignKey("client.id_client", ondelete="CASCADE"),
         nullable=False,
     )
-    comments = db.relationship("Comment", backref="comments_under_post")
-    likes = db.relationship("Favourite", backref="likes_under_post")
+    comments = db.relationship("Comment", backref="comments_under_post", cascade="all, delete-orphan")
+    likes = db.relationship("Favourite", backref="likes_under_post", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'<Client "{self.author}">'
@@ -34,7 +34,7 @@ class Comment(db.Model):
         nullable=False,
     )
     id_post = db.Column(
-        db.Integer, db.ForeignKey("post.id_post", ondelete="CASCADE"), nullable=False
+        db.Integer, db.ForeignKey("post.id_post", ondelete="CASCADE")
     )
 
     def __repr__(self):
@@ -72,14 +72,14 @@ class Client(db.Model, UserMixin):
     surname = db.Column(db.String(50))
     pesel = db.Column(db.String(11), unique=True)
     id_clients_mailing_address = db.Column(
-        db.Integer, db.ForeignKey("address.id_address")
+        db.Integer, db.ForeignKey("address.id_address"), nullable=True
     )
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.Text)
-    meters = db.relationship("Meter", backref="meter_for_client")
-    posts = db.relationship("Post", backref="users_posts", passive_deletes=True)
-    comments = db.relationship("Comment", backref="users_comments")
-    likes = db.relationship("Favourite", backref="users_likes")
+    meters = db.relationship("Meter", backref="meter_for_client", cascade="all, delete-orphan")
+    posts = db.relationship("Post", backref="users_posts", passive_deletes=True, cascade="all, delete-orphan")
+    comments = db.relationship("Comment", backref="users_comments", cascade="all, delete-orphan")
+    likes = db.relationship("Favourite", backref="users_likes", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'<Client "{self.name} {self.surname}">'
@@ -95,7 +95,7 @@ class Address(db.Model, UserMixin):
     house_number = db.Column(db.String(5))
     zip_code = db.Column(db.String(6))
     city = db.Column(db.String(50))
-    additional_info = db.Column(db.String(50))
+    additional_info = db.Column(db.String(50), nullable=True)
     clients = db.relationship("Client", backref="address")
     meters = db.relationship("Meter", backref="address_of_meter")
 
@@ -111,9 +111,13 @@ class Meter(db.Model, UserMixin):
     id_meter = db.Column(db.Integer, primary_key=True)
     id_owner = db.Column(db.Integer, db.ForeignKey("client.id_client"))
     id_meters_place_address = db.Column(db.Integer, db.ForeignKey("address.id_address"))
-    raking_points = db.Column(db.Integer)
+    member_of_challange = db.Column(db.Boolean)
+    ranking_points = db.Column(db.Integer)
+    number_of_rooms = db.Column(db.Integer, nullable=True)
+    number_of_residents = db.Column(db.Integer, nullable=True)
     readings = db.relationship("Reading", backref="reading")
-    offersformeters = db.relationship("OfferForMeter", backref="offerformeter_meter")
+    offersformeters = db.relationship("OfferForMeter", backref="offerformeter_meter", cascade="all, delete-orphan")
+    customizedchallanges = db.relationship("CustomizedChallange", backref="challange_for_meter", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'<Meter "{self.id_meter}">'
@@ -157,10 +161,42 @@ class OfferForMeter(db.Model, UserMixin):
     id_offers_type = db.Column(db.Integer, db.ForeignKey("offer.id_offer"))
     id_meter = db.Column(db.Integer, db.ForeignKey("meter.id_meter"))
     start_date = db.Column(db.Date)
-    end_date = db.Column(db.Date)
+    end_date = db.Column(db.Date, nullable=True)
 
     def __repr__(self):
         return f'<Meter "{self.id_offerformeter}">'
 
     def get_id(self):
         return self.id_offerformeter
+
+
+class Challange(db.Model, UserMixin):
+    __tablename__ = "challange"
+    id_challange = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    type_small_big = db.Column(db.Boolean) 
+    customizedchallanges = db.relationship("CustomizedChallange", backref="customized_challange")
+
+    def __repr__(self):
+        return f'<Challange "{self.name}">'
+
+    def get_id(self):
+        return self.id_challange
+    
+
+class CustomizedChallange(db.Model, UserMixin):
+    __tablename__ = "customizedchallange"
+    id_meter = db.Column(db.Integer, db.ForeignKey("meter.id_meter"), primary_key=True)
+    id_challange = db.Column(db.Integer, db.ForeignKey("challange.id_challange"), primary_key=True)
+    task_description = db.Column(db.Text)
+    is_done = db.Column(db.Boolean, nullable = True)
+    points_scored = db.Column(db.Integer)
+    start_date = db.Column(db.Date, nullable=True)
+    end_date = db.Column(db.Date, nullable=True)
+
+    def __repr__(self):
+        return f'<CustomizedChallange "{self.task_description}">'
+
+    def get_id(self):
+        return self.id_meter, self.id_challange
+    

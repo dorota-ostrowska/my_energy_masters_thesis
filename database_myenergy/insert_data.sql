@@ -20,28 +20,28 @@ VALUES
 	(9, 'bodziooo43', 'Bogdan', 'Tokarski', '89765678107', 5, 'bogdan.tokarski@gmail.com', 'Haslo123!'),
 	(10, 'maryska320', 'Maria', 'Bananowa', '97648290065', 5, 'maria.bananowa@gmail.com', 'Haslo123!');
 
-INSERT INTO meter(id_meter, id_owner, id_meters_place_address, ranking_points)
+INSERT INTO meter(id_meter, id_owner, id_meters_place_address, member_of_challange, ranking_points, number_of_rooms, number_of_residents)
 VALUES 
-	(1, 1, 1, 67),
-	(2, 1, 1, 54),
-	(3, 1, 2, 76),
-	(4, 1, 2, 12),
-	(5, 2, 2, 0),
-	(6, 3, 3, 8),
-	(7, 4, 4, 76),
-	(8, 4, 1, 43),
-	(9, 4, 4, 23),
-	(10, 5, 1, 8),
-	(11, 5, 5, 9),
-	(12, 5, 5, 1),
-	(13, 5, 5, 4),
-	(14, 6, 1, 65),
-	(15, 7, 2, 103),
-	(16, 7, 3, 49),
-	(17, 8, 3, 2),
-	(18, 9, 4, 43),
-	(19, 9, 4, 24),
-	(20, 10, 5, 65);
+	(1, 1, 1, FALSE, 0, null, null),
+	(2, 1, 1, FALSE, 0, null, null),
+	(3, 1, 2, FALSE, 0, null, null),
+	(4, 1, 2, FALSE, 0, null, null),
+	(5, 2, 2, FALSE, 0, null, null),
+	(6, 3, 3, FALSE, 0, null, null),
+	(7, 4, 4, FALSE, 0, null, null),
+	(8, 4, 1, FALSE, 0, null, null),
+	(9, 4, 4, FALSE, 0, null, null),
+	(10, 5, 1, FALSE, 0, null, null),
+	(11, 5, 5, FALSE, 0, null, null),
+	(12, 5, 5, FALSE, 0, null, null),
+	(13, 5, 5, FALSE, 0, null, null),
+	(14, 6, 1, FALSE, 0, null, null),
+	(15, 7, 2, FALSE, 0, null, null),
+	(16, 7, 3, FALSE, 0, null, null),
+	(17, 8, 3, FALSE, 0, null, null),
+	(18, 9, 4, FALSE, 0, null, null),
+	(19, 9, 4, FALSE, 0, null, null),
+	(20, 10, 5, FALSE, 0, null, null);
 
 INSERT INTO offer(id_offer, name, tarrif, pv_installation)
 VALUES 
@@ -81,3 +81,10 @@ VALUES
 	(25, 1, 18, '2022-03-01', null),
 	(26, 1, 19, '2020-01-02', null),
 	(27, 1, 20, '2021-06-23', null);
+
+INSERT INTO challange(id_challange, name, type_small_big)
+VALUES 
+	(1, 'dry_laundry_outside', 'S'),
+	(2, 'replace_bulbs', 'S'),
+	(3, 'set_sleep_mode', 'S'),
+	(4, 'reduce_consumption_by_10p', 'B');

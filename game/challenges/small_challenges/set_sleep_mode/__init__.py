@@ -16,6 +16,3 @@ def get_task_description_sleep_mode() -> str:
         f"{raw_text}\nHow to configure it? 🧐🤔 \nWindows 🖥️: {WINDOWS}\nMAC 🍎: {MAC}"
     )
     return complete_task
-
-
-print(get_task_description_sleep_mode())
