@@ -102,7 +102,7 @@ CREATE TABLE Post (
     id_post int  NOT NULL,
     text text  NOT NULL,
     date_created timestamp  NOT NULL,
-    author int  NOT NULL,
+    id_author int  NOT NULL,
     CONSTRAINT Post_pk PRIMARY KEY (id_post)
 );
 
@@ -206,7 +206,7 @@ ALTER TABLE OfferForMeter ADD CONSTRAINT OffersForMeter_Offer
 
 -- Reference: Post_Client (table: Post)
 ALTER TABLE Post ADD CONSTRAINT Post_Client
-    FOREIGN KEY (author)
+    FOREIGN KEY (id_author)
     REFERENCES Client (id_client)  
     NOT DEFERRABLE 
     INITIALLY IMMEDIATE
