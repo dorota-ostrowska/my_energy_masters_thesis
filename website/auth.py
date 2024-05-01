@@ -44,17 +44,13 @@ def register():
         zip_code = request.form.get("zip-code")
         city = request.form.get("city")
         additional_info = request.form.get("additional-info")
-
-        primary_key = [address.id_address for address in db.session.query(Address).filter(
+        primary_key_address = [address.id_address for address in db.session.query(Address).filter(
             Address.street==street,
             Address.house_number==house_number,
             Address.local_number==local_number,
             Address.zip_code==zip_code,
             Address.city==city
             )]
-
-
-
         if Client.query.filter_by(email=email).first():
             flash("Email is already in use, you have an account.", category="error")
         elif Client.query.filter_by(username=username).first():
@@ -71,7 +67,7 @@ def register():
                 category="error",
             )
         else:
-            if not primary_key:
+            if not primary_key_address:
                 id_a = get_next_id(db, Address.id_address)
                 new_address = Address(
                     id_address=id_a,
@@ -85,7 +81,7 @@ def register():
                 db.session.add(new_address)
                 db.session.commit()
             else:
-                id_a = primary_key[0]
+                id_a = primary_key_address[0]
             new_client = Client(
                 id_client=get_next_id(db, Client.id_client),
                 username=username,
