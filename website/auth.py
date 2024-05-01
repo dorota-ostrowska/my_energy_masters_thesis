@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from . import db
-from .models import Client
+from .models import Client, Address
 from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from .utils import get_next_id
@@ -38,6 +38,23 @@ def register():
         password_1 = request.form.get("password1")
         password_2 = request.form.get("password2")
 
+        street = request.form.get("street")
+        house_number = request.form.get("house-number")
+        local_number = request.form.get("local-number")
+        zip_code = request.form.get("zip-code")
+        city = request.form.get("city")
+        additional_info = request.form.get("additional-info")
+
+        primary_key = [address.id_address for address in db.session.query(Address).filter(
+            Address.street==street,
+            Address.house_number==house_number,
+            Address.local_number==local_number,
+            Address.zip_code==zip_code,
+            Address.city==city
+            )]
+
+
+
         if Client.query.filter_by(email=email).first():
             flash("Email is already in use, you have an account.", category="error")
         elif Client.query.filter_by(username=username).first():
@@ -54,13 +71,28 @@ def register():
                 category="error",
             )
         else:
+            if not primary_key:
+                id_a = get_next_id(db, Address.id_address)
+                new_address = Address(
+                    id_address=id_a,
+                    street=street,
+                    house_number=house_number,
+                    local_number=local_number,
+                    zip_code=zip_code,
+                    city=city,
+                    additional_info=additional_info,
+                )
+                db.session.add(new_address)
+                db.session.commit()
+            else:
+                id_a = primary_key[0]
             new_client = Client(
                 id_client=get_next_id(db, Client.id_client),
                 username=username,
                 name=name,
                 surname=surname,
                 pesel=pesel,
-                id_clients_mailing_address=0,
+                id_clients_mailing_address=id_a,
                 email=email,
                 password=str(generate_password_hash(password_1, method="sha256")),
             )

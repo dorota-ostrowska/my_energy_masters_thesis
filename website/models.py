@@ -93,6 +93,7 @@ class Address(db.Model, UserMixin):
     id_address = db.Column(db.Integer, primary_key=True)
     street = db.Column(db.String(50))
     house_number = db.Column(db.String(5))
+    local_number = db.Column(db.String(5))
     zip_code = db.Column(db.String(6))
     city = db.Column(db.String(50))
     additional_info = db.Column(db.String(50), nullable=True)

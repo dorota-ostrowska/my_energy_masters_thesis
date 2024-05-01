@@ -1,11 +1,10 @@
-INSERT INTO address(id_address, street, house_number, zip_code, city, additional_info)
+INSERT INTO address(id_address, street, house_number, local_number, zip_code, city, additional_info)
 VALUES 
-	(0, '', 0, '000000', '', ''),
-	(1, 'Koszykowa', 64, '03-765', 'Sopot', ''),
-	(2, 'Kwiatowa', 12, '03-353', 'Sopot', '11th level'),
-	(3, 'Jesionowa', 4, '06-245', 'Szczecin', ''),
-	(4, 'Robaczkowa', 76, '06-145', 'Szczecin', 'building A'),
-	(5, 'Brzoskwiniowa', 34, '06-865', 'Szczecin', '');
+	(1, 'Koszykowa', 64, '1c', '03-765', 'Sopot', ''),
+	(2, 'Kwiatowa', 12, '1c', '03-353', 'Sopot', '11th level'),
+	(3, 'Jesionowa', 4, '1c', '06-245', 'Szczecin', ''),
+	(4, 'Robaczkowa', 76, '1c', '06-145', 'Szczecin', 'building A'),
+	(5, 'Brzoskwiniowa', 34, '1c', '06-865', 'Szczecin', '');
 
 INSERT INTO client(id_client, username, name, surname, pesel, id_clients_mailing_address, email, password)
 VALUES 
