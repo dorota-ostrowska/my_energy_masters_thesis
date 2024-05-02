@@ -176,6 +176,7 @@ class Challange(db.Model, UserMixin):
     id_challange = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     type_small_big = db.Column(db.Boolean) 
+    description = db.Column(db.Text)
     customizedchallanges = db.relationship("CustomizedChallange", backref="customized_challange")
 
     def __repr__(self):
@@ -187,9 +188,9 @@ class Challange(db.Model, UserMixin):
 
 class CustomizedChallange(db.Model, UserMixin):
     __tablename__ = "customizedchallange"
-    id_meter = db.Column(db.Integer, db.ForeignKey("meter.id_meter"), primary_key=True)
-    id_challange = db.Column(db.Integer, db.ForeignKey("challange.id_challange"), primary_key=True)
-    task_description = db.Column(db.Text)
+    id_customized_challange = db.Column(db.Integer, primary_key=True)
+    id_meter = db.Column(db.Integer, db.ForeignKey("meter.id_meter"))
+    id_challange = db.Column(db.Integer, db.ForeignKey("challange.id_challange"))
     is_done = db.Column(db.Boolean, nullable = True)
     points_scored = db.Column(db.Integer)
     start_date = db.Column(db.Date, nullable=True)

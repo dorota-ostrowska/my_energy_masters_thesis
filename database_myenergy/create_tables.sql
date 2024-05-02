@@ -19,6 +19,7 @@ CREATE TABLE Challange (
     id_challange int  NOT NULL,
     name varchar(50)  NOT NULL,
     type_small_big char(1)  NOT NULL,
+    description text  NOT NULL,
     CONSTRAINT Challange_pk PRIMARY KEY (id_challange)
 );
 
@@ -47,14 +48,14 @@ CREATE TABLE Comment (
 
 -- Table: CustomizedChallange
 CREATE TABLE CustomizedChallange (
+    id_customized_challange int  NOT NULL,
     id_meter int  NOT NULL,
     id_challange int  NOT NULL,
-    task_description text  NOT NULL,
     is_done boolean  NOT NULL,
     points_scored int  NOT NULL,
     start_date timestamp  NULL,
     end_date timestamp  NULL,
-    CONSTRAINT CustomizedChallange_pk PRIMARY KEY (id_meter,id_challange)
+    CONSTRAINT CustomizedChallange_pk PRIMARY KEY (id_customized_challange)
 );
 
 -- Table: Favourite
@@ -113,6 +114,16 @@ CREATE TABLE Reading (
     used_energy decimal(2,0)  NOT NULL,
     id_meter int  NOT NULL,
     CONSTRAINT Reading_pk PRIMARY KEY (id_reading)
+);
+
+-- Table: Invoice
+CREATE TABLE Invoice (
+    id_invoice int  NOT NULL,
+    id_meter int  NOT NULL,
+    date_of_issue timestamp  NOT NULL,
+    amount_to_pay decimal(2,0)  NOT NULL,
+    used_energy decimal(2,0)  NOT NULL,
+    CONSTRAINT Invoice_pk PRIMARY KEY (id_invoice)
 );
 
 -- foreign keys
@@ -214,6 +225,14 @@ ALTER TABLE Post ADD CONSTRAINT Post_Client
 
 -- Reference: Reading_Meter (table: Reading)
 ALTER TABLE Reading ADD CONSTRAINT Reading_Meter
+    FOREIGN KEY (id_meter)
+    REFERENCES Meter (id_meter)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: Invoice_Meter (table: Invoice)
+ALTER TABLE Invoice ADD CONSTRAINT Invoice_Meter
     FOREIGN KEY (id_meter)
     REFERENCES Meter (id_meter)  
     NOT DEFERRABLE 

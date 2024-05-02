@@ -1,8 +1,11 @@
 from flask import Blueprint, flash, jsonify, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
-from .models import Post, Client, Comment, Favourite
+from .models import Post, Client, Comment, Favourite, CustomizedChallange, Challange
 from . import db
 from .utils import get_next_id
+from datetime import date
+from sqlalchemy import text
+
 
 views = Blueprint("views", __name__)
 
@@ -18,6 +21,30 @@ def home():
 def forum():
     posts = Post.query.all()
     return render_template("forum.html", user=current_user, posts=posts)
+
+
+@views.route("/challanges")
+@login_required
+def challanges():
+    """
+    Displays all available challanges for logged in user.
+    """
+    query = f"""
+        select c.name 
+        from challange as c
+        inner join customizedchallange as cc
+        on cc.id_challange = c.id_challange
+        inner join meter as m
+        on m.id_meter = cc.id_meter 
+        inner join client as cli
+        on cli.id_client = m.id_owner
+        where cli.id_client = {current_user.id_client}
+        and cc.is_done is False
+        and DATE '{date.today()}' BETWEEN cc.start_date AND cc.end_date;
+    """
+    available_challanges = db.session.execute(text(query)).fetchall()
+    print(available_challanges)
+    return render_template("challanges.html", user=current_user, challanges=available_challanges)
 
 
 @views.route("/dashboard")
