@@ -1,11 +1,13 @@
 from flask import Blueprint, flash, jsonify, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
+
+from website.customized_tasks import get_task_dry_laundry_outside, get_task_replace_bulbs, get_task_sleep_mode
+
 from .models import Post, Client, Comment, Favourite, CustomizedChallange, Challange
 from . import db
 from .utils import get_next_id
 from datetime import date, timedelta
 from sqlalchemy import text
-
 
 views = Blueprint("views", __name__)
 
@@ -29,22 +31,48 @@ def challanges():
     """
     Displays all available challanges for logged in user.
     """
-    query = f"""
-        select c.name 
+    challanges_not_unlocked_query = f"""
+        with challanges_started as (select c.name, c.id_challange 
         from challange as c
         inner join customizedchallange as cc
-        on cc.id_challange = c.id_challange
-        inner join meter as m
-        on m.id_meter = cc.id_meter 
+        on cc.id_challange = c.id_challange	
         inner join client as cli
-        on cli.id_client = m.id_owner
-        where cli.id_client = {current_user.id_client}
-        and cc.is_done is False
-        and DATE '{date.today()}' BETWEEN cc.start_date AND cc.end_date;
+        on cli.id_client = cc.id_client
+        where cli.id_client = {current_user.id_client})
+        select c.name, c.id_challange
+        from challange as c
+        EXCEPT 
+        select name, id_challange from challanges_started
     """
-    available_challanges = db.session.execute(text(query)).fetchall()
-    print(available_challanges)
-    return render_template("challanges.html", user=current_user, challanges=available_challanges)
+    challanges_not_unlocked = db.session.execute(text(challanges_not_unlocked_query)).fetchall()
+    unfinished_challanges_query = f"""
+        select c.name, c.description, c.customizing_function
+        from challange as c
+        inner join customizedchallange as cc
+        on cc.id_challange = c.id_challange	
+        inner join client as cli
+        on cli.id_client = cc.id_client
+        inner join address as a
+        on a.id_address = cli.id_clients_mailing_address
+        where cli.id_client = {current_user.id_client}
+        and (cc.is_done is false or cc.is_done is null)
+        and '{date.today()}' between cc.start_date and cc.end_date;
+    """
+    unfinished_challanges = db.session.execute(text(unfinished_challanges_query)).fetchall()
+
+    unfinished_challanges_customized = _customize_task_desciptions(unfinished_challanges)
+    return render_template("challanges.html", 
+                           challanges_not_unlocked=challanges_not_unlocked,
+                           unfinished_challanges=unfinished_challanges_customized)
+
+def _customize_task_desciptions(challanges):
+    """
+    challanges - list[tuple] - name, description, customizing function
+    """
+    challanges_customized = []
+    for name, template, customizing_function in challanges:
+        challanges_customized.append((name, globals()[customizing_function](template, current_user)))
+    return challanges_customized
 
 
 @views.route("/dashboard")
@@ -79,17 +107,25 @@ def try_challange(id_challange):
     today: date = date.today()
     next_week: date = today + timedelta(days=7)
     customized_challange = CustomizedChallange(
-        id_customized_challenge = get_next_id(db, CustomizedChallange.id_customized_challange),
-        id_meter = ...,
-        id_challange = ...,
+        id_customized_challange = get_next_id(db, CustomizedChallange.id_customized_challange),
+        id_client = current_user.id_client,
+        id_challange = id_challange,
         is_done = False,
-        poinst_scored = 0,
+        points_scored = 0,
         start_date = today,
         end_date = next_week,
     ) 
     db.session.add(customized_challange)
     db.session.commit()
-    task_description = get_task_description()
+    unlocked_task_query = f"""
+        select c.name, c.description, c.customizing_function
+        from challange as c
+        where c.id_challange = {id_challange}
+    """
+    unlocked_task = db.session.execute(text(unlocked_task_query)).fetchall()
+    task_desciption = _customize_task_desciptions(unlocked_task)[0][1]
+    return render_template(
+        "new_task.html", customized_challange=customized_challange, task_desciption=task_desciption)
 
 @views.route("/forum/delete-post/<id_post>")
 @login_required

@@ -1,4 +1,4 @@
-from configuration_guide import WINDOWS, MAC
+from website.configuration_guide import WINDOWS, MAC
 
 
 def get_task_description_sleep_mode() -> str:

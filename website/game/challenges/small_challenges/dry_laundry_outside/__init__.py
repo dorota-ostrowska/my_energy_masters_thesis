@@ -1,5 +1,5 @@
 import requests
-from secret import WEATHER_API_KEY
+from website.secret import WEATHER_API_KEY
 
 
 def _check_weather(city: str) -> str:

@@ -1,5 +1,5 @@
 -- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2024-05-02 11:32:41.748
+-- Last modification date: 2024-05-02 20:25:52.867
 
 -- tables
 -- Table: Address
@@ -20,6 +20,7 @@ CREATE TABLE Challange (
     name varchar(50)  NOT NULL,
     type_small_big char(1)  NOT NULL,
     description text  NOT NULL,
+    customizing_function varchar(50)  NOT NULL,
     CONSTRAINT Challange_pk PRIMARY KEY (id_challange)
 );
 
@@ -52,7 +53,7 @@ CREATE TABLE Comment (
 -- Table: CustomizedChallange
 CREATE TABLE CustomizedChallange (
     id_customized_challange int  NOT NULL,
-    id_meter int  NOT NULL,
+    id_client int  NOT NULL,
     id_challange int  NOT NULL,
     is_done boolean  NOT NULL,
     points_scored int  NOT NULL,
@@ -117,6 +118,14 @@ CREATE TABLE Reading (
 );
 
 -- foreign keys
+-- Reference: CustomizedChallange_Client (table: CustomizedChallange)
+ALTER TABLE CustomizedChallange ADD CONSTRAINT CustomizedChallange_Client
+    FOREIGN KEY (id_client)
+    REFERENCES Client (id_client)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
 -- Reference: client_address (table: Client)
 ALTER TABLE Client ADD CONSTRAINT client_address
     FOREIGN KEY (id_clients_mailing_address)
@@ -145,14 +154,6 @@ ALTER TABLE Comment ADD CONSTRAINT comment_post
 ALTER TABLE CustomizedChallange ADD CONSTRAINT customizedchallange_challange
     FOREIGN KEY (id_challange)
     REFERENCES Challange (id_challange)  
-    NOT DEFERRABLE 
-    INITIALLY IMMEDIATE
-;
-
--- Reference: customizedchallange_meter (table: CustomizedChallange)
-ALTER TABLE CustomizedChallange ADD CONSTRAINT customizedchallange_meter
-    FOREIGN KEY (id_meter)
-    REFERENCES Meter (id_meter)  
     NOT DEFERRABLE 
     INITIALLY IMMEDIATE
 ;

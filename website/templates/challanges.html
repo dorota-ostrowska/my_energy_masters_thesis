@@ -3,23 +3,52 @@
     rel="stylesheet"
     integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
     crossorigin="anonymous" />
-<h1 align="center">Available challenges</h1>
+<h1 align="center">Challanges</h1>
 <br/ > 
+<h2>Current challanges</h2>
 <div id="challanges">
-  {% for challange in challanges %}
+  {% for challange in unfinished_challanges %}
+  <div class="card border-dark">
+    <div class="card-body">
+      <div class="card-text">{{challange[0]}}</div>
+    </div>
+
+  <div class="card-body">
+    <div class="card-text">{{challange[1]}}</div>
+  <br/ > 
+  
+</div>
+    <div align="center">
+        <button type="submit" class="btn btn-lg btn-primary">Finish</button>
+        <a href="/forum"><button type="button"
+                class="btn btn-lg btn-secondary">Resign</button></a>
+    </div>
+
+    <br/ > 
+{% endfor %}
+</div>
+
+</div>
+<br/ > 
+
+<h2>Available challanges</h2>
+<div id="challanges">
+  {% for challange in challanges_not_unlocked %}
   <div class="card border-dark">
     <div class="card-body">
       <div class="card-text">{{challange[0]}}</div>
     </div>
     <div align="center">
-      <a href="/challanges"
+      <a href="/challanges/{{challange[1]}}"
         ><button type="button" class="btn btn-primary btn-lg">
           Try
         </button>
       </a>
     </div>
+         {% endfor %}
     <br/ > 
+ 
   </div>
   <br/ > 
-  {% endfor %}
+
 </div>
