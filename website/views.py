@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from .models import Post, Client, Comment, Favourite, CustomizedChallange, Challange
 from . import db
 from .utils import get_next_id
-from datetime import date
+from datetime import date, timedelta
 from sqlalchemy import text
 
 
@@ -72,6 +72,24 @@ def create_post():
             return redirect(url_for("views.forum"))
     return render_template("create_post.html", user=current_user)
 
+
+@views.route("/challanges/<id_challange>")
+@login_required
+def try_challange(id_challange):
+    today: date = date.today()
+    next_week: date = today + timedelta(days=7)
+    customized_challange = CustomizedChallange(
+        id_customized_challenge = get_next_id(db, CustomizedChallange.id_customized_challange),
+        id_meter = ...,
+        id_challange = ...,
+        is_done = False,
+        poinst_scored = 0,
+        start_date = today,
+        end_date = next_week,
+    ) 
+    db.session.add(customized_challange)
+    db.session.commit()
+    task_description = get_task_description()
 
 @views.route("/forum/delete-post/<id_post>")
 @login_required
