@@ -1,4 +1,5 @@
 import requests
+from website.models import Address
 from website.secret import WEATHER_API_KEY
 
 from website.configuration_guide import MAC, WINDOWS
@@ -19,33 +20,39 @@ def _check_weather(city: str) -> str:
         temperature = response_json["current"]["temp_c"]
         if humidity > 60:
             return (
-                f"The weather conditions aren't good to dry your washing, it's too wet ({humidity}%). "
+                f"The weather conditions in {city} aren't good to dry your washing, it's too wet ({humidity}%). "
                 "Try to do this task another day! 😉"
             )
         elif wind > 30:
             return (
-                f"The weather conditions aren't good to dry your washing, it's too windy ({wind} kmph). "
+                f"The weather conditions in {city} aren't good to dry your washing, it's too windy ({wind} kmph). "
                 "Try to do this task another day! 😉"
             )
         elif temperature < 10:
             return (
-                f"The weather conditions aren't good to dry your washing, it's too cold ({temperature}℃). "
+                f"The weather conditions in {city} aren't good to dry your washing, it's too cold ({temperature}℃). "
                 "Try to do this task another day! 😉"
             )
         else:
             return (
-                "The weather conditions are great to dry your washing today 💚. "
+                f"The weather conditions in {city} are great to dry your washing today 💚. "
                 f"\n💧 humidity: {humidity}% 💦 wind: {wind} kmph 💨 temperature: {temperature}℃ 🌡️"
             )
     else:
-        return "You have to check the weather conditions on your own because there is a problem with app."
+        return f"You have to check the weather conditions in {city} on your own because there is a problem with app."
 
 
 def get_task_dry_laundry_outside(description_template: str, user: str) -> str:
     """
     Returns a task description with information on weather conditions in user's location.
     """
-    return description_template.format(weather_today=(_check_weather('Warsaw')))
+    address = (
+        Address.query
+        .filter_by(id_address=user.id_clients_mailing_address)
+        .with_entities(Address.city)
+        .first()
+    )
+    return description_template.format(weather_today=(_check_weather(address[0])))
 
 
 def _get_savings_on_bulbs(number_of_rooms: int) -> dict:

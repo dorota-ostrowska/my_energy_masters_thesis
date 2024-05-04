@@ -7,7 +7,7 @@
 <br/ > 
 <h2>Current challanges</h2>
 <div id="challanges">
-  {% for challange in unfinished_challanges %}
+  {% for challange in challanges_unlocked %}
   <div class="card border-dark">
     <div class="card-body">
       <div class="card-text">{{challange[0]}}</div>
@@ -33,7 +33,7 @@
 
 <h2>Available challanges</h2>
 <div id="challanges">
-  {% for challange in challanges_not_unlocked %}
+  {% for challange in challanges_locked %}
   <div class="card border-dark">
     <div class="card-body">
       <div class="card-text">{{challange[0]}}</div>
