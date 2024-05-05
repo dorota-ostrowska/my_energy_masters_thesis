@@ -24,7 +24,7 @@ jobs:
       - name: run flake8
         run: |
           cd ..
-          # flake8 --extend-ignore E203,W291,E402,W503 --max-line-length 120
+          flake8 --extend-ignore E203,W291,E402,W503 --max-line-length 120 --per-file-ignores="website/views.py:F401"
   sonarcloud:
     name: build sonar cloud
     runs-on: ubuntu-latest

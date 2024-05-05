@@ -1,5 +1,5 @@
 from flask import Blueprint, flash, jsonify, render_template, request, redirect, url_for
-from flask_login import login_required, current_user, logout_user
+from flask_login import login_required, current_user
 
 from website.customized_tasks import (
     get_task_dry_laundry_outside,
@@ -12,14 +12,14 @@ from .models import (
     Client,
     Comment,
     Favourite,
-    CustomizedChallange,
-    Challange,
+    CustomizedChallenge,
+    Challenge,
     Address,
 )
 from . import db
 from .utils import get_next_id
 from datetime import date, timedelta
-from sqlalchemy import text
+from sqlalchemy import or_, text
 
 views = Blueprint("views", __name__)
 
@@ -47,51 +47,56 @@ def _get_unlocked_challenges(id_client: str) -> list[tuple[str, str]]:
     Returns a list of tuples with names and customized descriptions of challenges
     to display them on a website.
     """
-    unfinished_challanges_query: str = f"""
-        select c.name, c.description, c.customizing_function
-        from challange as c
-        inner join customizedchallange as cc
-        on cc.id_challange = c.id_challange	
-        inner join client as cli
-        on cli.id_client = cc.id_client
-        inner join address as a
-        on a.id_address = cli.id_clients_mailing_address
-        where cli.id_client = {id_client}
-        and (cc.is_done is false or cc.is_done is null)
-        and '{date.today()}' between cc.start_date and cc.end_date;
-    """
-    unlocked_challanges: list[tuple[str, str, str]] = db.session.execute(
-        text(unfinished_challanges_query)
-    ).fetchall()
-    unlocked_challanges_customized: list[tuple[str, str]] = _customize_task_desciptions(
-        unlocked_challanges
+    unlocked_challenges = (
+        db.session.query(
+            Challenge.name, Challenge.description, Challenge.customizing_function
+        )
+        .join(
+            CustomizedChallenge,
+            CustomizedChallenge.id_challenge == Challenge.id_challenge,
+        )
+        .join(Client, Client.id_client == CustomizedChallenge.id_client)
+        .join(Address, Address.id_address == Client.id_clients_mailing_address)
+        .filter(
+            Client.id_client == id_client,
+            or_(
+                CustomizedChallenge.is_done == False,
+                CustomizedChallenge.is_done.is_(None),
+            ),
+            CustomizedChallenge.start_date <= date.today(),
+            CustomizedChallenge.end_date >= date.today(),
+        )
+        .all()
     )
-    return unlocked_challanges_customized
+    unlocked_challenges_customized: list[tuple[str, str]] = _customize_task_desciptions(
+        unlocked_challenges
+    )
+    return unlocked_challenges_customized
 
 
-def _get_locked_challanges(id_client: str) -> list[tuple[str, int]]:
+def _get_locked_challenges(id_client: str) -> list[tuple[str, int]]:
     """
-    Returns a list of tuples with names and IDs of locked challanges.
+    Returns a list of tuples with names and IDs of locked challenges.
     """
-    challanges_locked_query: str = f"""
-        with challanges_started as (select c.name, c.id_challange 
-        from challange as c
-        inner join customizedchallange as cc
-        on cc.id_challange = c.id_challange	
+    challenges_locked_query: str = f"""
+        with challenges_started as (select c.name, c.id_challenge 
+        from challenge as c
+        inner join customizedchallenge as cc
+        on cc.id_challenge = c.id_challenge	
         inner join client as cli
         on cli.id_client = cc.id_client
         where cli.id_client = {id_client})
-        select c.name, c.id_challange
-        from challange as c
+        select c.name, c.id_challenge
+        from challenge as c
         EXCEPT 
-        select name, id_challange from challanges_started
+        select name, id_challenge from challenges_started
     """
-    return db.session.execute(text(challanges_locked_query)).fetchall()
+    return db.session.execute(text(challenges_locked_query)).fetchall()
 
 
-@views.route("/challanges")
+@views.route("/challenges")
 @login_required
-def challanges():
+def challenges():
     """
     Displays all locked, available challenge names for logged in user
     and current, unfinished, unlocked task names and desciptions.
@@ -99,9 +104,9 @@ def challanges():
     interest and create mystery.
     """
     return render_template(
-        "challanges.html",
-        challanges_locked=_get_locked_challanges(current_user.id_client),
-        challanges_unlocked=_get_unlocked_challenges(current_user.id_client),
+        "challenges.html",
+        challenges_locked=_get_locked_challenges(current_user.id_client),
+        challenges_unlocked=_get_unlocked_challenges(current_user.id_client),
     )
 
 
@@ -116,12 +121,12 @@ def _customize_task_desciptions(
     This function uses global() to call customizing function to change template to customized
     description.
     """
-    challanges_customized = []
+    challenges_customized = []
     for name, template, customizing_function in challenges:
-        challanges_customized.append(
+        challenges_customized.append(
             (name, globals()[customizing_function](template, current_user))
         )
-    return challanges_customized
+    return challenges_customized
 
 
 @views.route("/home")
@@ -161,29 +166,29 @@ def _add_challenge_to_customized_challenge(id_challenge: int) -> None:
     """
     today: date = date.today()
     next_week: date = today + timedelta(days=7)
-    customized_challange = CustomizedChallange(
-        id_customized_challange=get_next_id(
-            db, CustomizedChallange.id_customized_challange
+    customized_challenge = CustomizedChallenge(
+        id_customized_challenge=get_next_id(
+            db, CustomizedChallenge.id_customized_challenge
         ),
         id_client=current_user.id_client,
-        id_challange=id_challenge,
+        id_challenge=id_challenge,
         is_done=False,
         points_scored=0,
         start_date=today,
         end_date=next_week,
     )
-    db.session.add(customized_challange)
+    db.session.add(customized_challenge)
     db.session.commit()
 
 
 def _get_task_customized_desciption(id_challenge: int) -> list[tuple[str, str]]:
     """
-    Gets a name and a customized description of fresh unlocked challange.
+    Gets a name and a customized description of fresh unlocked challenge.
     """
     fresh_unlocked_task = (
-        Challange.query.filter_by(id_challange=id_challenge)
+        Challenge.query.filter_by(id_challenge=id_challenge)
         .with_entities(
-            Challange.name, Challange.description, Challange.customizing_function
+            Challenge.name, Challenge.description, Challenge.customizing_function
         )
         .first()
     )
@@ -198,17 +203,17 @@ def _get_task_customized_desciption(id_challenge: int) -> list[tuple[str, str]]:
     )
 
 
-@views.route("/challanges/<id_challange>")
+@views.route("/challenges/<id_challenge>")
 @login_required
-def try_challange(id_challange: int):
+def try_challenge(id_challenge: int):
     """
     Creates a new record in CustomizedChallenge table.
     Displays a new unlocked task description.
     """
-    _add_challenge_to_customized_challenge(id_challange)
+    _add_challenge_to_customized_challenge(id_challenge)
     name: str
     description: str
-    name, description = _get_task_customized_desciption(id_challange)[0]
+    name, description = _get_task_customized_desciption(id_challenge)[0]
     return render_template("new_task.html", task_name=name, task_desciption=description)
 
 

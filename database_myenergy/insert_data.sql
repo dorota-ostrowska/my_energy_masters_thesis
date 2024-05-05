@@ -6,7 +6,7 @@ VALUES
 
 
 INSERT INTO client(id_client, username, name, surname, pesel, id_clients_mailing_address, 
-	email, password, member_of_challange, number_of_rooms, number_of_residents)
+	email, password, member_of_challenge, number_of_rooms, number_of_residents)
 VALUES 
 	(1, null, 'Dorota', 'Ostrowska', '12345678999', 1, null, null, null, null, null),
 	(2, null, 'Aleksandra', 'Nowak', '74638593645', 2, null, null, null, null, null),
@@ -26,7 +26,7 @@ VALUES
 	(3, 2, '647892009999999999', 1);
 
 
-INSERT INTO challange(id_challange, name, type_small_big, description, customizing_function)
+INSERT INTO challenge(id_challenge, name, type_small_big, description, customizing_function)
 VALUES 
 	(
 		1, 

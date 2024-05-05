@@ -15,7 +15,7 @@
                     <a class="nav-item nav-link"
                         href="https://www.climateactionoxfordshire.org.uk/">Blog</a>
                     <a class="nav-item nav-link" href="/forum">Forum</a>
-                    <a class="nav-item nav-link" href="/challanges">Game</a>
+                    <a class="nav-item nav-link" href="/challenges">Game</a>
                     <a class="nav-item nav-link" href="/dashboard">Usage</a>
                     <a class="nav-item nav-link" href="/home">Invoices</a>
                     <a class="nav-item nav-link" href="/home">Notifications</a>
@@ -26,18 +26,18 @@
     </nav>
 
 
-<h1 align="center">Challanges</h1>
+<h1 align="center">Challenges</h1>
 <br/ > 
-<h2>Current challanges</h2>
-<div id="challanges">
-  {% for challange in challanges_unlocked %}
+<h2>Current challenges</h2>
+<div id="challenges">
+  {% for challenge in challenges_unlocked %}
   <div class="card border-dark">
     <div class="card-body">
-      <div class="card-text">{{challange[0]}}</div>
+      <div class="card-text">{{challenge[0]}}</div>
     </div>
 
   <div class="card-body">
-    <div class="card-text">{{challange[1]}}</div>
+    <div class="card-text">{{challenge[1]}}</div>
   <br/ > 
   
 </div>
@@ -54,24 +54,22 @@
 </div>
 <br/ > 
 
-<h2>Available challanges</h2>
-<div id="challanges">
-  {% for challange in challanges_locked %}
+<h2>Available challenges</h2>
+  {% for challenge in challenges_locked %}
   <div class="card border-dark">
     <div class="card-body">
-      <div class="card-text">{{challange[0]}}</div>
+      <div class="card-text">{{challenge[0]}}</div>
     </div>
     <div align="center">
-      <a href="/challanges/{{challange[1]}}"
+      <a href="/challenges/{{challenge[1]}}"
         ><button type="button" class="btn btn-primary btn-lg">
           Try
         </button>
       </a>
     </div>
+        <br/ >
          {% endfor %}
-    <br/ > 
+ 
  
   </div>
-  <br/ > 
 
-</div>

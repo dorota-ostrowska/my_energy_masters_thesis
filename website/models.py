@@ -78,7 +78,7 @@ class Client(db.Model, UserMixin):
     )
     email = db.Column(db.String(50), unique=True, nullable=True)
     password = db.Column(db.Text, nullable=True)
-    member_of_challange = db.Column(db.Boolean, nullable=True)
+    member_of_challenge = db.Column(db.Boolean, nullable=True)
     number_of_rooms = db.Column(db.Integer, nullable=True)
     number_of_residents = db.Column(db.Integer, nullable=True)
     meter = db.relationship(
@@ -96,9 +96,9 @@ class Client(db.Model, UserMixin):
     likes = db.relationship(
         "Favourite", backref="users_likes", cascade="all, delete-orphan"
     )
-    customizedchallanges = db.relationship(
-        "CustomizedChallange",
-        backref="challange_for_client",
+    customizedchallenges = db.relationship(
+        "CustomizedChallenge",
+        backref="challenge_for_client",
         cascade="all, delete-orphan",
     )
 
@@ -172,39 +172,39 @@ class Offer(db.Model, UserMixin):
         return self.id_offer
 
 
-class Challange(db.Model, UserMixin):
-    __tablename__ = "challange"
-    id_challange = db.Column(db.Integer, primary_key=True)
+class Challenge(db.Model, UserMixin):
+    __tablename__ = "challenge"
+    id_challenge = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
     type_small_big = db.Column(db.Boolean)
     description = db.Column(db.Text)
     customizing_function = db.Column(db.String(50))
-    customizedchallanges = db.relationship(
-        "CustomizedChallange", backref="customized_challange"
+    customizedchallenges = db.relationship(
+        "CustomizedChallenge", backref="customized_challenge"
     )
 
     def __repr__(self):
-        return f'<Challange "{self.name}">'
+        return f'<Challenge "{self.name}">'
 
     def get_id(self):
-        return self.id_challange
+        return self.id_challenge
 
 
-class CustomizedChallange(db.Model, UserMixin):
-    __tablename__ = "customizedchallange"
-    id_customized_challange = db.Column(db.Integer, primary_key=True)
+class CustomizedChallenge(db.Model, UserMixin):
+    __tablename__ = "customizedchallenge"
+    id_customized_challenge = db.Column(db.Integer, primary_key=True)
     id_client = db.Column(db.Integer, db.ForeignKey("client.id_client"))
-    id_challange = db.Column(db.Integer, db.ForeignKey("challange.id_challange"))
+    id_challenge = db.Column(db.Integer, db.ForeignKey("challenge.id_challenge"))
     is_done = db.Column(db.Boolean, nullable=True)
     points_scored = db.Column(db.Integer)
     start_date = db.Column(db.Date, nullable=True)
     end_date = db.Column(db.Date, nullable=True)
 
     def __repr__(self):
-        return f'<CustomizedChallange "{self.task_description}">'
+        return f'<CustomizedChallenge "{self.task_description}">'
 
     def get_id(self):
-        return self.id_meter, self.id_challange
+        return self.id_meter, self.id_challenge
 
 
 class Invoice(db.Model, UserMixin):

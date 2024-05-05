@@ -14,14 +14,14 @@ CREATE TABLE Address (
     CONSTRAINT Address_pk PRIMARY KEY (id_address)
 );
 
--- Table: Challange
-CREATE TABLE Challange (
-    id_challange int  NOT NULL,
+-- Table: Challenge
+CREATE TABLE Challenge (
+    id_challenge int  NOT NULL,
     name varchar(50)  NOT NULL,
     type_small_big char(1)  NOT NULL,
     description text  NOT NULL,
     customizing_function varchar(50)  NOT NULL,
-    CONSTRAINT Challange_pk PRIMARY KEY (id_challange)
+    CONSTRAINT Challenge_pk PRIMARY KEY (id_challenge)
 );
 
 -- Table: Client
@@ -34,7 +34,7 @@ CREATE TABLE Client (
     id_clients_mailing_address int  NOT NULL,
     email varchar(50)  NULL,
     password text  NULL,
-    member_of_challange boolean  NULL,
+    member_of_challenge boolean  NULL,
     number_of_rooms int  NULL,
     number_of_residents int  NULL,
     CONSTRAINT Client_pk PRIMARY KEY (id_client)
@@ -50,16 +50,16 @@ CREATE TABLE Comment (
     CONSTRAINT Comment_pk PRIMARY KEY (id_comment)
 );
 
--- Table: CustomizedChallange
-CREATE TABLE CustomizedChallange (
-    id_customized_challange int  NOT NULL,
+-- Table: CustomizedChallenge
+CREATE TABLE CustomizedChallenge (
+    id_customized_challenge int  NOT NULL,
     id_client int  NOT NULL,
-    id_challange int  NOT NULL,
+    id_challenge int  NOT NULL,
     is_done boolean  NOT NULL,
     points_scored int  NOT NULL,
     start_date timestamp  NULL,
     end_date timestamp  NULL,
-    CONSTRAINT CustomizedChallange_pk PRIMARY KEY (id_customized_challange)
+    CONSTRAINT CustomizedChallenge_pk PRIMARY KEY (id_customized_challenge)
 );
 
 -- Table: Favourite
@@ -118,8 +118,8 @@ CREATE TABLE Reading (
 );
 
 -- foreign keys
--- Reference: CustomizedChallange_Client (table: CustomizedChallange)
-ALTER TABLE CustomizedChallange ADD CONSTRAINT CustomizedChallange_Client
+-- Reference: CustomizedChallenge_Client (table: CustomizedChallenge)
+ALTER TABLE CustomizedChallenge ADD CONSTRAINT CustomizedChallenge_Client
     FOREIGN KEY (id_client)
     REFERENCES Client (id_client)  
     NOT DEFERRABLE 
@@ -150,10 +150,10 @@ ALTER TABLE Comment ADD CONSTRAINT comment_post
     INITIALLY IMMEDIATE
 ;
 
--- Reference: customizedchallange_challange (table: CustomizedChallange)
-ALTER TABLE CustomizedChallange ADD CONSTRAINT customizedchallange_challange
-    FOREIGN KEY (id_challange)
-    REFERENCES Challange (id_challange)  
+-- Reference: customizedchallenge_challenge (table: CustomizedChallenge)
+ALTER TABLE CustomizedChallenge ADD CONSTRAINT customizedchallenge_challenge
+    FOREIGN KEY (id_challenge)
+    REFERENCES Challenge (id_challenge)  
     NOT DEFERRABLE 
     INITIALLY IMMEDIATE
 ;
