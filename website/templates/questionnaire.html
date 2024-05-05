@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible"
+		content="IE=edge">
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0">
+	<title>
+		Questionnaire
+	</title>
+	<style>
+		body {
+            background: url("../static/images/renewable_sources_4.JPG") no-repeat;
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+		}
+
+        h1 {
+            color: white;
+        }
+
+		form {
+			background-color: #fff;
+			max-width: 500px;
+			margin: 50px auto;
+			padding: 30px 20px;
+			box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
+		}
+
+		.form-control {
+			text-align: left;
+			margin-bottom: 25px;
+		}
+
+		.form-control label {
+			display: block;
+			margin-bottom: 10px;
+		}
+
+		.form-control input,
+		.form-control select,
+		.form-control textarea {
+			border: 1px solid #777;
+			border-radius: 2px;
+			font-family: inherit;
+			padding: 10px;
+			display: block;
+			width: 95%;
+		}
+
+		.form-control input[type="radio"],
+		.form-control input[type="checkbox"] {
+			display: inline-block;
+			width: auto;
+		}
+
+		button {
+			background-color: #018079;
+			border: 1px solid #777;
+			border-radius: 2px;
+			font-family: inherit;
+			font-size: 21px;
+			display: block;
+			width: 100%;
+			margin-top: 50px;
+			margin-bottom: 20px;
+            color: #fff;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>Questionnaire</h1>
+
+	<form id="form">
+
+		<div class="form-control">
+			<label for="number_of_rooms" id="label_number_of_rooms">
+				How many rooms do you have in your house?
+			</label>
+
+			<input type="text" id="number_of_rooms"
+				placeholder="Enter the number" />
+		</div>
+
+		<div class="form-control">
+			<label for="number_of_residents" id="label-number_of_residents">
+				How many people live in your house?
+			</label>
+
+			<input type="text" id="number_of_residents"
+				placeholder="Enter the number" />
+		</div>
+
+        <div class="form-control">
+			<label>
+				The production of electricity has a huge impact on our environment. Did you know that the past decade is likely to have been the hottest period in the last 125,000 years?
+			</label>
+
+			<label for="recommed-1">
+				<input type="radio" id="recommed-1"
+					name="recommed">Yes
+				</input>
+			</label>
+			<label for="recommed-2">
+				<input type="radio" id="recommed-2"
+					name="recommed">No
+				</input>
+			</label>
+		</div>
+
+		<div class="form-control">
+			<label for="question" id="label_question">
+				Do you want to mitigate the effects of climate change and, at the same time, your electric bills?
+			</label>
+
+			<select name="question" id="question">
+				<option value="yes">Yes</option>
+				<option value="no">No</option>
+				<option value="idontknow">I don't know</option>
+			</select>
+		</div>
+
+		<div class="form-control">
+			<label>What are your motivations for saving electricity?
+				<small>(Check all that apply)</small>
+			</label>
+			<label for="inp-1">
+				<input type="checkbox" name="inp">Reducing environmental impact
+				</input>
+			</label>
+			<label for="inp-2">
+				<input type="checkbox" name="inp">Cost savings
+				</input>
+			</label>
+			<label for="inp-3">
+				<input type="checkbox" name="inp">Sustainable living
+				</input>
+			</label>
+			<label for="inp-4">
+				<input type="checkbox" name="inp">Personal responsibility
+				</input>
+			</label>
+			<label for="inp-5">
+				<input type="checkbox" name="inp">Energy independence
+				</input>
+			</label>
+			<label for="inp-6">
+				<input type="checkbox" name="inp">Other
+				</input>
+			</label>
+		</div>
+
+		<button type="submit" value="submit">
+			Submit
+		</button>
+	</form>
+</body>
+
+</html>
