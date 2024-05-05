@@ -28,6 +28,11 @@ views = Blueprint("views", __name__)
 @views.route("/home")
 def home():
     if current_user.is_authenticated:
+        logged_in_user = Client.query.filter_by(
+            id_client=current_user.id_client
+        ).first()
+        if not logged_in_user.number_of_rooms or not logged_in_user.number_of_residents:
+            return redirect(url_for("views.questionnaire"))
         return render_template("dashboard.html", user=current_user)
     return render_template("home.html")
 
@@ -312,3 +317,19 @@ def like(id_post):
             "liked": current_user.id_client in map(lambda x: x.id_author, post.likes),
         }
     )
+
+
+@views.route("/questionnaire", methods=["GET", "POST"])
+def questionnaire():
+    if request.method == "POST":
+        try:
+            number_of_rooms = int(request.form.get("number_of_rooms"))
+            number_of_residents = int(request.form.get("number_of_residents"))
+        except ValueError:
+            flash("You entered a wrong value.", category="error")
+        user = Client.query.filter_by(id_client=current_user.id_client).first()
+        user.number_of_rooms = number_of_rooms
+        user.number_of_residents = number_of_residents
+        db.session.commit()
+        return redirect(url_for("views.client_logged_in"))
+    return render_template("questionnaire.html", user=current_user)

@@ -70,7 +70,7 @@ def register():
             db.session.commit()
             login_user(client, remember=True)
             flash(f"{username} client created!")
-            return redirect(url_for("views.client_logged_in"))
+            return redirect(url_for("views.questionnaire"))
     return render_template("register.html", user=current_user)
 
 
