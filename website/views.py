@@ -79,7 +79,10 @@ def _get_locked_challenges(id_client: str) -> list[tuple[str, int]]:
     """
     challenges_started = (
         db.session.query(Challenge.name, Challenge.id_challenge)
-        .join(CustomizedChallenge, CustomizedChallenge.id_challenge == Challenge.id_challenge)
+        .join(
+            CustomizedChallenge,
+            CustomizedChallenge.id_challenge == Challenge.id_challenge,
+        )
         .join(Client, Client.id_client == CustomizedChallenge.id_client)
         .filter(Client.id_client == id_client)
         .all()
