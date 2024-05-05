@@ -30,6 +30,13 @@
 			box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.5);
 		}
 
+		.montserrat-font {
+			font-family: "Montserrat", sans-serif;
+			font-optical-sizing: auto;
+			font-weight: 200;
+			font-style: normal;
+		}
+
 		.form-control {
 			text-align: left;
 			margin-bottom: 25px;
@@ -45,7 +52,7 @@
 		.form-control textarea {
 			border: 1px solid #777;
 			border-radius: 2px;
-			font-family: inherit;
+			font-family: "Montserrat", sans-serif;
 			padding: 10px;
 			display: block;
 			width: 95%;
@@ -53,6 +60,7 @@
 
 		.form-control input[type="radio"],
 		.form-control input[type="checkbox"] {
+			margin-right: 10px;
 			display: inline-block;
 			width: auto;
 		}
@@ -61,7 +69,7 @@
 			background-color: #018079;
 			border: 1px solid #777;
 			border-radius: 2px;
-			font-family: inherit;
+			font-family: "Montserrat", sans-serif;
 			font-size: 21px;
 			display: block;
 			width: 100%;
@@ -70,9 +78,35 @@
             color: #fff;
 		}
 	</style>
+	<link
+		href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+		rel="stylesheet"
+		integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+		crossorigin="anonymous" />
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#navbar"><span
+                        class="navbar-toggler-icon"></span></span></button>
+            <div class="collapse navbar-collapse" id="navbar">
+                <div class="navbar-nav">
+                    <a class="nav-item nav-link" href="/home">Home</a>
+                    <a class="nav-item nav-link"
+                        href="https://www.climateactionoxfordshire.org.uk/">Blog</a>
+                    <a class="nav-item nav-link" href="/forum">Forum</a>
+                    <a class="nav-item nav-link" href="/challenges">Game</a>
+                    <a class="nav-item nav-link" href="/dashboard">Usage</a>
+                    <a class="nav-item nav-link" href="/home">Invoices</a>
+                    <a class="nav-item nav-link" href="/home">Notifications</a>
+                    <a class="nav-item nav-link" href="/logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+<br />
 	<h1>Questionnaire</h1>
 
 	<form id="form">
