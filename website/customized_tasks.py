@@ -47,8 +47,7 @@ def get_task_dry_laundry_outside(description_template: str, user: str) -> str:
     Returns a task description with information on weather conditions in user's location.
     """
     address = (
-        Address.query
-        .filter_by(id_address=user.id_clients_mailing_address)
+        Address.query.filter_by(id_address=user.id_clients_mailing_address)
         .with_entities(Address.city)
         .first()
     )
@@ -101,4 +100,6 @@ def get_task_sleep_mode(description_template: str, user: str) -> str:
     """
     Returns a task description.
     """
-    return description_template.format(link_guide=f"How to configure it? 🧐🤔 Windows 🖥️: {WINDOWS} MAC 🍎: {MAC}")
+    return description_template.format(
+        link_guide=f"How to configure it? 🧐🤔 Windows 🖥️: {WINDOWS} MAC 🍎: {MAC}"
+    )

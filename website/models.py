@@ -13,8 +13,12 @@ class Post(db.Model):
         db.ForeignKey("client.id_client", ondelete="CASCADE"),
         nullable=False,
     )
-    comments = db.relationship("Comment", backref="comments_under_post", cascade="all, delete-orphan")
-    likes = db.relationship("Favourite", backref="likes_under_post", cascade="all, delete-orphan")
+    comments = db.relationship(
+        "Comment", backref="comments_under_post", cascade="all, delete-orphan"
+    )
+    likes = db.relationship(
+        "Favourite", backref="likes_under_post", cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return f'<Client "{self.author}">'
@@ -33,9 +37,7 @@ class Comment(db.Model):
         db.ForeignKey("client.id_client", ondelete="CASCADE"),
         nullable=False,
     )
-    id_post = db.Column(
-        db.Integer, db.ForeignKey("post.id_post", ondelete="CASCADE")
-    )
+    id_post = db.Column(db.Integer, db.ForeignKey("post.id_post", ondelete="CASCADE"))
 
     def __repr__(self):
         return f'<Client "{self.author}">'
@@ -79,11 +81,26 @@ class Client(db.Model, UserMixin):
     member_of_challange = db.Column(db.Boolean, nullable=True)
     number_of_rooms = db.Column(db.Integer, nullable=True)
     number_of_residents = db.Column(db.Integer, nullable=True)
-    meter = db.relationship("Meter", backref="clients_meter", cascade="all, delete-orphan")
-    posts = db.relationship("Post", backref="users_posts", passive_deletes=True, cascade="all, delete-orphan")
-    comments = db.relationship("Comment", backref="users_comments", cascade="all, delete-orphan")
-    likes = db.relationship("Favourite", backref="users_likes", cascade="all, delete-orphan")
-    customizedchallanges = db.relationship("CustomizedChallange", backref="challange_for_client", cascade="all, delete-orphan")
+    meter = db.relationship(
+        "Meter", backref="clients_meter", cascade="all, delete-orphan"
+    )
+    posts = db.relationship(
+        "Post",
+        backref="users_posts",
+        passive_deletes=True,
+        cascade="all, delete-orphan",
+    )
+    comments = db.relationship(
+        "Comment", backref="users_comments", cascade="all, delete-orphan"
+    )
+    likes = db.relationship(
+        "Favourite", backref="users_likes", cascade="all, delete-orphan"
+    )
+    customizedchallanges = db.relationship(
+        "CustomizedChallange",
+        backref="challange_for_client",
+        cascade="all, delete-orphan",
+    )
 
     def __repr__(self):
         return f'<Client "{self.name} {self.surname}">'
@@ -115,9 +132,7 @@ class Meter(db.Model, UserMixin):
     id_meter = db.Column(db.Integer, primary_key=True)
     id_client = db.Column(db.Integer, db.ForeignKey("client.id_client"))
     ppe = db.Column(db.String(18))
-    id_offer = db.Column(
-        db.Integer, db.ForeignKey("offer.id_offer")
-    )
+    id_offer = db.Column(db.Integer, db.ForeignKey("offer.id_offer"))
     readings = db.relationship("Reading", backref="reading")
     invoices = db.relationship("Invoice", backref="invoices")
 
@@ -161,24 +176,26 @@ class Challange(db.Model, UserMixin):
     __tablename__ = "challange"
     id_challange = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50))
-    type_small_big = db.Column(db.Boolean) 
+    type_small_big = db.Column(db.Boolean)
     description = db.Column(db.Text)
     customizing_function = db.Column(db.String(50))
-    customizedchallanges = db.relationship("CustomizedChallange", backref="customized_challange")
+    customizedchallanges = db.relationship(
+        "CustomizedChallange", backref="customized_challange"
+    )
 
     def __repr__(self):
         return f'<Challange "{self.name}">'
 
     def get_id(self):
         return self.id_challange
-    
+
 
 class CustomizedChallange(db.Model, UserMixin):
     __tablename__ = "customizedchallange"
     id_customized_challange = db.Column(db.Integer, primary_key=True)
     id_client = db.Column(db.Integer, db.ForeignKey("client.id_client"))
     id_challange = db.Column(db.Integer, db.ForeignKey("challange.id_challange"))
-    is_done = db.Column(db.Boolean, nullable = True)
+    is_done = db.Column(db.Boolean, nullable=True)
     points_scored = db.Column(db.Integer)
     start_date = db.Column(db.Date, nullable=True)
     end_date = db.Column(db.Date, nullable=True)
@@ -188,7 +205,7 @@ class CustomizedChallange(db.Model, UserMixin):
 
     def get_id(self):
         return self.id_meter, self.id_challange
-    
+
 
 class Invoice(db.Model, UserMixin):
     __tablename__ = "invoice"

@@ -37,15 +37,23 @@ def register():
         password_1 = request.form.get("password1")
         password_2 = request.form.get("password2")
 
-        client = Client.query.filter_by(id_client=id_client).filter_by(pesel=pesel).first()
+        client = (
+            Client.query.filter_by(id_client=id_client).filter_by(pesel=pesel).first()
+        )
         if not client:
-            flash("Your meter is not smart, there is no data in our system.", category="error")
+            flash(
+                "Your meter is not smart, there is no data in our system.",
+                category="error",
+            )
         elif client and client.username:
             flash("You already have an account, try to log in.", category="error")
         elif Client.query.filter_by(email=email).first():
             flash("Email is already in use.", category="error")
         elif Client.query.filter_by(username=username).first():
-            flash("Username is already in use, try again with another username.", category="error")
+            flash(
+                "Username is already in use, try again with another username.",
+                category="error",
+            )
         elif password_1 != password_2:
             flash("Passwords don't match.", category="error")
         elif len(username) < 6:
