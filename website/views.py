@@ -19,7 +19,7 @@ from .models import (
 from . import db
 from .utils import get_next_id
 from datetime import date, timedelta
-from sqlalchemy import or_, text
+from sqlalchemy import or_
 
 views = Blueprint("views", __name__)
 
