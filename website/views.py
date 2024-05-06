@@ -28,11 +28,6 @@ views = Blueprint("views", __name__)
 @views.route("/home")
 def home():
     if current_user.is_authenticated:
-        logged_in_user = Client.query.filter_by(
-            id_client=current_user.id_client
-        ).first()
-        if not logged_in_user.number_of_rooms or not logged_in_user.number_of_residents:
-            return redirect(url_for("views.questionnaire"))
         return render_template("dashboard.html", user=current_user)
     return render_template("home.html")
 
@@ -110,6 +105,13 @@ def challenges():
     Locked tasks have a deliberately hidden task description to arouse
     interest and create mystery.
     """
+    logged_in_user = Client.query.filter_by(id_client=current_user.id_client).first()
+    if (
+        not logged_in_user.number_of_rooms
+        or not logged_in_user.number_of_residents
+        or not logged_in_user.member_of_challenge
+    ):
+        return redirect(url_for("views.questionnaire"))
     return render_template(
         "challenges.html",
         challenges_locked=_get_locked_challenges(current_user.id_client),
