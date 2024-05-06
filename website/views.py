@@ -106,12 +106,10 @@ def challenges():
     interest and create mystery.
     """
     logged_in_user = Client.query.filter_by(id_client=current_user.id_client).first()
-    if (
-        not logged_in_user.number_of_rooms
-        or not logged_in_user.number_of_residents
-        or not logged_in_user.member_of_challenge
-    ):
+    if not logged_in_user.number_of_rooms or not logged_in_user.number_of_residents:
         return redirect(url_for("views.questionnaire"))
+    elif not logged_in_user.member_of_challenge:
+        return redirect(url_for("views.game_history"))
     return render_template(
         "challenges.html",
         challenges_locked=_get_locked_challenges(current_user.id_client),
@@ -335,3 +333,21 @@ def questionnaire():
         db.session.commit()
         return redirect(url_for("views.client_logged_in"))
     return render_template("questionnaire.html", user=current_user)
+
+
+@views.route("/game-history", methods=["GET", "POST"])
+@login_required
+def game_history():
+    """
+    If user takes part in challenge, it displays challenges,
+    if user does not, it displays a window with a main history and possibility to
+    enroll to challenge.
+    """
+    if request.method == "POST":
+        user = Client.query.filter_by(id_client=current_user.id_client).first()
+        user.member_of_challenge = True
+        db.session.commit()
+        return redirect(url_for("views.challenges"))
+    with open("website/game/main_story.txt", "r", encoding="utf-8") as file:
+        history = file.read()
+    return render_template("game_history.html", history=history)
