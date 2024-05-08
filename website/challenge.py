@@ -136,11 +136,17 @@ def _customize_task_desciptions(challenges: list[Challenge]) -> list[tuple[Chall
     with their corresponding Challenge objects, are stored in tuples and returned as a list.
     """
     challenges_customized = []
-    for challenge in challenges:
-        custom_description = globals()[challenge.customizing_function](
-            challenge.description, current_user
+    if isinstance(challenges, list):
+        for challenge in challenges:
+            custom_description = globals()[challenge.customizing_function](
+                challenge.description, current_user
+            )
+            challenges_customized.append((challenge, custom_description))
+    else:
+        custom_description = globals()[challenges.customizing_function](
+            challenges.description, current_user
         )
-        challenges_customized.append((challenge, custom_description))
+        challenges_customized.append((challenges, custom_description))
     return challenges_customized
 
 
@@ -172,25 +178,16 @@ def _add_challenge_to_customized_challenge(id_challenge: int) -> None:
     db.session.commit()
 
 
-def _get_task_customized_desciption(id_challenge: int) -> list[tuple[str, str]]:
+def _get_challenge_by_id(id_challenge: int) -> Challenge:
     """
     Gets a name and a customized description of fresh unlocked challenge.
     """
-    fresh_unlocked_task = (
+    return (
         Challenge.query.filter_by(id_challenge=id_challenge)
         .with_entities(
             Challenge.name, Challenge.description, Challenge.customizing_function
         )
         .first()
-    )
-    return _customize_task_desciptions(
-        [
-            (
-                fresh_unlocked_task.name,
-                fresh_unlocked_task.description,
-                fresh_unlocked_task.customizing_function,
-            )
-        ]
     )
 
 
@@ -202,10 +199,8 @@ def try_challenge(id_challenge: int):
     Displays a new unlocked task description.
     """
     _add_challenge_to_customized_challenge(id_challenge)
-    name: str
-    description: str
-    name, description = _get_task_customized_desciption(id_challenge)[0]
-    return render_template("new_task.html", task_name=name, task_desciption=description)
+    challenge, task_desciption = _customize_task_desciptions(_get_challenge_by_id(id_challenge))[0]
+    return render_template("new_task.html", challenge=challenge, task_desciption=task_desciption)
 
 
 @challenge.route("/questionnaire", methods=["GET", "POST"])
