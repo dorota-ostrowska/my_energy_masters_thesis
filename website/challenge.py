@@ -2,6 +2,7 @@
 A view.
 User's challenges.
 """
+
 from flask import Blueprint, flash, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 
@@ -115,11 +116,15 @@ def display_challenges():
     return render_template(
         "challenge.html",
         challenges_locked=_get_locked_challenges(current_user.id_client),
-        challenges_unlocked=_customize_task_desciptions(_get_unlocked_challenges(current_user.id_client),
-    ))
+        challenges_unlocked=_customize_task_desciptions(
+            _get_unlocked_challenges(current_user.id_client),
+        ),
+    )
 
 
-def _customize_task_desciptions(challenges: list[Challenge]) -> list[tuple[Challenge, str]]:
+def _customize_task_desciptions(
+    challenges: list[Challenge],
+) -> list[tuple[Challenge, str]]:
     """
     Customize task descriptions for the given challenges.
 
@@ -180,7 +185,13 @@ def _add_challenge_to_customized_challenge(id_challenge: int) -> None:
 
 def _get_challenge_by_id(id_challenge: int) -> Challenge:
     """
-    Gets a name and a customized description of fresh unlocked challenge.
+    Retrieves the details of a challenge by its ID.
+
+    Args:
+        id_challenge (int): The ID of the challenge to retrieve details for.
+
+    Returns:
+        Challenge: An instance of the Challenge model.
     """
     return (
         Challenge.query.filter_by(id_challenge=id_challenge)
@@ -195,16 +206,49 @@ def _get_challenge_by_id(id_challenge: int) -> Challenge:
 @login_required
 def try_challenge(id_challenge: int):
     """
-    Creates a new record in CustomizedChallenge table.
-    Displays a new unlocked task description.
+    Handles the user's attempt to try a challenge.
+
+    This function creates a new record in the CustomizedChallenge table
+    for the specified challenge ID, indicating that the user is attempting
+    the challenge. It then retrieves and displays the description of a new
+    unlocked task associated with the challenge.
+
+    Args:
+        id_challenge (int): The ID of the challenge the user wants to try.
+
+    Returns:
+        rendered_template: HTML template displaying the new task description
+            along with details of the challenge.
     """
     _add_challenge_to_customized_challenge(id_challenge)
-    challenge, task_desciption = _customize_task_desciptions(_get_challenge_by_id(id_challenge))[0]
-    return render_template("new_task.html", challenge=challenge, task_desciption=task_desciption)
+    challenge, task_desciption = _customize_task_desciptions(
+        _get_challenge_by_id(id_challenge)
+    )[0]
+    return render_template(
+        "new_task.html", challenge=challenge, task_desciption=task_desciption
+    )
 
 
 @challenge.route("/questionnaire", methods=["GET", "POST"])
 def questionnaire():
+    """
+    Handles the questionnaire form submission.
+
+    If the request method is POST, the function attempts to retrieve
+    the number of rooms and residents entered by the user. If any value
+    entered is not an integer, it flashes an error message.
+
+    The function then updates the user's profile with the entered values
+    for the number of rooms and residents and commits the changes to the
+    database.
+
+    If the request method is GET, the function renders the questionnaire
+    template, passing the current user's information.
+
+    Returns:
+        rendered_template: HTML template displaying the questionnaire form
+            for the user to fill out.
+    """
     if request.method == "POST":
         try:
             number_of_rooms = int(request.form.get("number_of_rooms"))
@@ -223,9 +267,16 @@ def questionnaire():
 @login_required
 def game_story():
     """
-    If user takes part in challenge, it displays challenges,
-    if user does not, it displays a window with a main history and possibility to
-    enroll to challenge.
+    Displays either challenges or the main game story window, depending on the user's participation status.
+
+    If the request method is POST and the user enrolls in a challenge, it updates the user's profile
+    to indicate their participation and redirects to the page displaying challenges.
+
+    If the request method is GET, it reads the main game story from a text file and renders the game story template,
+    passing the story content.
+
+    Returns:
+        rendered_template: HTML template displaying either the challenges or the main game story window.
     """
     if request.method == "POST":
         user = Client.query.filter_by(id_client=current_user.id_client).first()

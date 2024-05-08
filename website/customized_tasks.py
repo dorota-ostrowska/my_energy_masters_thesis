@@ -79,7 +79,7 @@ def _get_savings_on_bulbs(number_of_rooms: int) -> dict:
     cost_led: int = int(power_of_led * 0.001 * time_of_lighting * price_of_1kwh)
     cost_for_household_oldtype_bulb: int = number_of_rooms * cost_old_type_bulb
     cost_for_household_led: int = number_of_rooms * cost_led
-    subtract = cost_for_household_oldtype_bulb-cost_for_household_led
+    subtract = cost_for_household_oldtype_bulb - cost_for_household_led
     return {
         "cost_old_type_bulb": cost_old_type_bulb,
         "cost_led": cost_led,

@@ -2,6 +2,7 @@
 A view.
 Authorization to MyEnergy service - login and register functions.
 """
+
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from . import db
 from .models import Client
@@ -27,7 +28,7 @@ def login():
 
     Returns:
         If the user is logged in successfully, redirects to the dashboard.
-        Otherwise, renders the login page.    
+        Otherwise, renders the login page.
     """
     if request.method == "POST":
         username = request.form.get("username")
@@ -72,7 +73,9 @@ def register():
         client = (
             Client.query.filter_by(id_client=id_client).filter_by(pesel=pesel).first()
         )
-        error = validate_registration_data(client, username, email, password_1, password_2)
+        error = validate_registration_data(
+            client, username, email, password_1, password_2
+        )
         if error:
             flash(error, category="error")
         else:
@@ -83,7 +86,9 @@ def register():
     return render_template("register.html", user=current_user)
 
 
-def validate_registration_data(client, username, email, password_1, password_2) -> str | None:
+def validate_registration_data(
+    client, username, email, password_1, password_2
+) -> str | None:
     """
     Validate registration data.
 
