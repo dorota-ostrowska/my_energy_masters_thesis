@@ -15,11 +15,15 @@ db = SQLAlchemy(app)
 
 
 def create_app():
-    from .views import views
+    from .home import home
     from .auth import auth
+    from .forum import forum
+    from .challenge import challenge
 
-    app.register_blueprint(views, url_prefix="/")
-    app.register_blueprint(auth, url_prefix="/")
+    app.register_blueprint(home, url_prefix="/")
+    app.register_blueprint(auth, url_prefix="/user")
+    app.register_blueprint(forum, url_prefix="/forum")
+    app.register_blueprint(challenge, url_prefix="/challenge")
 
     with app.app_context():
         db.create_all()
