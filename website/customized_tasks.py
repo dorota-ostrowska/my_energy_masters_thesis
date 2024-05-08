@@ -93,7 +93,8 @@ def get_task_replace_bulbs(description_template: str, user: str) -> str:
     Returns a task description.
     It takes a customized string for user with calculated savings on bulbs too.
     """
-    return description_template.format(_get_savings_on_bulbs(user.number_of_rooms))
+    # return description_template.format(_get_savings_on_bulbs(user.number_of_rooms))
+    return "test"
 
 
 def get_task_sleep_mode(description_template: str, user: str) -> str:

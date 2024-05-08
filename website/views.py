@@ -42,14 +42,13 @@ def forum():
     return render_template("forum.html", user=current_user, posts=posts)
 
 
-def _get_unlocked_challenges(id_client: str) -> list[tuple[str, str]]:
+def _get_unlocked_challenges(id_client: int) -> Challenge:
     """
-    Returns a list of tuples with names and customized descriptions of challenges
-    to display them on a website.
+    Returns a challenges to display them on a website as unlocked tasks.
     """
     unlocked_challenges = (
         db.session.query(
-            Challenge.name, Challenge.description, Challenge.customizing_function
+            Challenge
         )
         .join(
             CustomizedChallenge,
@@ -73,26 +72,21 @@ def _get_unlocked_challenges(id_client: str) -> list[tuple[str, str]]:
     return unlocked_challenges_customized
 
 
-def _get_locked_challenges(id_client: str) -> list[tuple[str, int]]:
-    """
-    Returns a list of tuples with names and IDs of locked challenges.
-    """
+def _get_locked_challenges(id_client: int) -> Challenge:
+    # get all challenges that the user has not started yet
     challenges_started = (
-        db.session.query(Challenge.name, Challenge.id_challenge)
-        .join(
-            CustomizedChallenge,
-            CustomizedChallenge.id_challenge == Challenge.id_challenge,
-        )
+        db.session.query(CustomizedChallenge.id_challenge)
         .join(Client, Client.id_client == CustomizedChallenge.id_client)
         .filter(Client.id_client == id_client)
         .all()
     )
-    all_challenges = Challenge.query.all()
-    locked_challenges = [
-        (challenge.name, challenge.id_challenge)
-        for challenge in all_challenges
-        if (challenge.name, challenge.id_challenge) not in challenges_started
-    ]
+    challenges_started_ids = [row[0] for row in challenges_started]
+    # get challenges that the user hasn't started yet
+    locked_challenges = (
+        db.session.query(Challenge)
+        .filter(~Challenge.id_challenge.in_(challenges_started_ids))
+        .all()
+    )
     return locked_challenges
 
 
@@ -109,7 +103,7 @@ def challenges():
     if not logged_in_user.number_of_rooms or not logged_in_user.number_of_residents:
         return redirect(url_for("views.questionnaire"))
     elif not logged_in_user.member_of_challenge:
-        return redirect(url_for("views.game_history"))
+        return redirect(url_for("views.game_story"))
     return render_template(
         "challenges.html",
         challenges_locked=_get_locked_challenges(current_user.id_client),
@@ -129,10 +123,11 @@ def _customize_task_desciptions(
     description.
     """
     challenges_customized = []
-    for name, template, customizing_function in challenges:
-        challenges_customized.append(
-            (name, globals()[customizing_function](template, current_user))
+    for challenge in challenges:
+        custom_description = globals()[challenge.customizing_function](
+            challenge.description, current_user
         )
+        challenges_customized.append((challenge, custom_description))
     return challenges_customized
 
 
@@ -335,9 +330,9 @@ def questionnaire():
     return render_template("questionnaire.html", user=current_user)
 
 
-@views.route("/game-history", methods=["GET", "POST"])
+@views.route("/game-story", methods=["GET", "POST"])
 @login_required
-def game_history():
+def game_story():
     """
     If user takes part in challenge, it displays challenges,
     if user does not, it displays a window with a main history and possibility to
@@ -349,5 +344,5 @@ def game_history():
         db.session.commit()
         return redirect(url_for("views.challenges"))
     with open("website/game/main_story.txt", "r", encoding="utf-8") as file:
-        history = file.read()
-    return render_template("game_history.html", history=history)
+        story = file.read()
+    return render_template("game_story.html", story=story)

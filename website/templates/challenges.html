@@ -32,7 +32,7 @@
   {% for challenge in challenges_unlocked %}
   <div class="card border-dark">
     <div class="card-body">
-      <div class="card-text">{{challenge[0]}}</div>
+      <div class="card-text">{{challenge[0].name}}</div>
     </div>
 
   <div class="card-body">
@@ -60,7 +60,7 @@
       <div class="card-text">{{challenge[0]}}</div>
     </div>
     <div align="center">
-      <a href="/challenges/{{challenge[1]}}"
+      <a href="/challenges/{{challenge.name}}"
         ><button type="button" class="btn btn-primary btn-lg">
           Try
         </button>
