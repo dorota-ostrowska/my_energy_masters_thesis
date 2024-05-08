@@ -1,4 +1,8 @@
-from flask import Blueprint, flash, jsonify, render_template, request, redirect, url_for
+"""
+A view.
+User's challenges.
+"""
+from flask import Blueprint, flash, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 
 from website.customized_tasks import (
@@ -8,27 +12,34 @@ from website.customized_tasks import (
 )
 
 from .models import (
-    Post,
     Client,
-    Comment,
-    Favourite,
     CustomizedChallenge,
     Challenge,
-    Address,
 )
 from . import db
 from .utils import get_next_id
 from datetime import date, timedelta
 from sqlalchemy import or_
 
+
 challenge = Blueprint("challenge", __name__)
 
 
-def _get_unlocked_challenges(id_client: int) -> Challenge:
+def _get_unlocked_challenges(id_client: int) -> list[Challenge]:
     """
-    Returns a challenges to display them on a website as unlocked tasks.
+    Retrieve unlocked challenges for a given client.
+
+    Args:
+        id_client (int): The ID of the client.
+
+    Returns:
+        list[Challenge]: A list of unlocked Challenge objects for the client.
+
+    This function queries the database to retrieve challenges that are unlocked for the given client.
+    It checks if the client has any customized challenges that are not marked as done and are within
+    the start and end date range. The unlocked challenges are returned as a list of Challenge objects.
     """
-    unlocked_challenges = (
+    return (
         db.session.query(Challenge)
         .join(
             CustomizedChallenge,
@@ -46,14 +57,22 @@ def _get_unlocked_challenges(id_client: int) -> Challenge:
         )
         .all()
     )
-    unlocked_challenges_customized: list[tuple[str, str]] = _customize_task_desciptions(
-        unlocked_challenges
-    )
-    return unlocked_challenges_customized
 
 
-def _get_locked_challenges(id_client: int) -> Challenge:
-    # get all challenges that the user has not started yet
+def _get_locked_challenges(id_client: int) -> list[Challenge]:
+    """
+    Retrieve locked challenges for a given client.
+
+    Args:
+        id_client (int): The ID of the client.
+
+    Returns:
+        list[Challenge]: A list of locked Challenge objects for the client.
+
+    This function retrieves challenges that the client has not started yet. It first gets the IDs of
+    challenges that the client has already started, then retrieves challenges that the client has not
+    started by excluding those IDs. The locked challenges are returned as a list of Challenge objects.
+    """
     challenges_started = (
         db.session.query(CustomizedChallenge.id_challenge)
         .join(Client, Client.id_client == CustomizedChallenge.id_client)
@@ -61,7 +80,6 @@ def _get_locked_challenges(id_client: int) -> Challenge:
         .all()
     )
     challenges_started_ids = [row[0] for row in challenges_started]
-    # get challenges that the user hasn't started yet
     locked_challenges = (
         db.session.query(Challenge)
         .filter(~Challenge.id_challenge.in_(challenges_started_ids))
@@ -72,12 +90,22 @@ def _get_locked_challenges(id_client: int) -> Challenge:
 
 @challenge.route("/")
 @login_required
-def challenges():
+def display_challenges():
     """
-    Displays all locked, available challenge names for logged in user
-    and current, unfinished, unlocked task names and desciptions.
-    Locked tasks have a deliberately hidden task description to arouse
-    interest and create mystery.
+    If the user hasn't completed the questionnaire regarding the number of rooms
+    or residents, they are redirected to the questionnaire page.
+    If the user is not a member of any challenge, they are redirected to the game story page.
+
+    Returns:
+        rendered_template: HTML template displaying the challenges and tasks for the user.
+            The template includes:
+                - Locked challenges with deliberately hidden task descriptions to arouse interest.
+                - Unlocked challenges with task names and descriptions customized for the user.
+
+    Raises:
+        Redirect: If the user hasn't completed the questionnaire or is not a member of any challenge,
+            they are redirected to the respective pages.
+
     """
     logged_in_user = Client.query.filter_by(id_client=current_user.id_client).first()
     if not logged_in_user.number_of_rooms or not logged_in_user.number_of_residents:
@@ -87,20 +115,25 @@ def challenges():
     return render_template(
         "challenge.html",
         challenges_locked=_get_locked_challenges(current_user.id_client),
-        challenges_unlocked=_get_unlocked_challenges(current_user.id_client),
-    )
+        challenges_unlocked=_customize_task_desciptions(_get_unlocked_challenges(current_user.id_client),
+    ))
 
 
-def _customize_task_desciptions(
-    challenges: list[tuple[str, str, str]]
-) -> list[tuple[str, str]]:
+def _customize_task_desciptions(challenges: list[Challenge]) -> list[tuple[Challenge, str]]:
     """
-    Takes a list of tuples with names and template descriptions of challenges.
-    Changes those templates to customized task descriptions.
-    Argument 'challenges' contains list of tuples with name, description, customizing function
-    of challenge.
-    This function uses global() to call customizing function to change template to customized
-    description.
+    Customize task descriptions for the given challenges.
+
+    Args:
+        challenges (list[Challenge]): A list of Challenge objects representing the challenges.
+
+    Returns:
+        list[tuple[Challenge, str]]: A list of tuples containing Challenge objects and their
+            customized descriptions.
+
+    This function takes a list of Challenge objects and customizes their descriptions based
+    on the user's current state or profile. It iterates through each challenge and applies
+    a customizing function to modify the description. The customized descriptions, along
+    with their corresponding Challenge objects, are stored in tuples and returned as a list.
     """
     challenges_customized = []
     for challenge in challenges:
@@ -113,8 +146,14 @@ def _customize_task_desciptions(
 
 def _add_challenge_to_customized_challenge(id_challenge: int) -> None:
     """
-    It is called after clicking 'try' by user on a challenge.
-    Adds the challenge to the customizedchallenge table.
+    Adds the specified challenge to the CustomizedChallenge table for the current user.
+
+    This function is typically called after the user clicks 'try' on a challenge.
+    It creates a new entry in the CustomizedChallenge table, associating the challenge
+    with the current user and setting the start date to today and the end date to a week from today.
+
+    Args:
+        id_challenge (int): The ID of the challenge to be added to the CustomizedChallenge table.
     """
     today: date = date.today()
     next_week: date = today + timedelta(days=7)
@@ -197,7 +236,7 @@ def game_story():
         user = Client.query.filter_by(id_client=current_user.id_client).first()
         user.member_of_challenge = True
         db.session.commit()
-        return redirect(url_for("challenge.challenges"))
+        return redirect(url_for("challenge.display_challenges"))
     with open("website/game/main_story.txt", "r", encoding="utf-8") as file:
         story = file.read()
     return render_template("game_story.html", story=story)
