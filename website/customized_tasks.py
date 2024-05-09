@@ -50,8 +50,8 @@ def get_task_dry_laundry_outside(description_template: str, user: str) -> str:
         Address.query.filter_by(id_address=user.id_clients_mailing_address)
         .with_entities(Address.city)
         .first()
-    )
-    return description_template.format(weather_today=(_check_weather(address[0])))
+    )[0]
+    return description_template.format(weather_today=(_check_weather(address)))
 
 
 def _get_savings_on_bulbs(number_of_rooms: int) -> dict:
