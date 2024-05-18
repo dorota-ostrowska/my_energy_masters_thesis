@@ -286,3 +286,39 @@ def game_story():
     with open("website/game/main_story.txt", "r", encoding="utf-8") as file:
         story = file.read()
     return render_template("game_story.html", story=story)
+
+
+@challenge.route("/finish-challenge/<id_challenge>", methods=["POST"])
+@login_required
+def finish_challenge(id_challenge):
+    """
+    Mark the challenge as finished for the current user.
+    """
+    customized_challenge = CustomizedChallenge.query.filter_by(
+        id_client=current_user.id_client, id_challenge=id_challenge
+    ).first()
+    if customized_challenge:
+        customized_challenge.is_done = True
+        db.session.commit()
+        flash("Challenge finished successfully!", "success")
+    else:
+        flash("Challenge not found or not started.", "error")
+    return redirect(url_for("challenge.display_challenges"))
+
+
+@challenge.route("/resign-challenge/<int:id_challenge>", methods=["POST"])
+@login_required
+def resign_challenge(id_challenge):
+    """
+    Resign from the challenge for the current user.
+    """
+    customized_challenge = CustomizedChallenge.query.filter_by(
+        id_client=current_user.id_client, id_challenge=id_challenge
+    ).first()
+    if customized_challenge:
+        db.session.delete(customized_challenge)
+        db.session.commit()
+        flash("Resigned from challenge successfully.", "success")
+    else:
+        flash("Challenge not found or not started.", "error")
+    return redirect(url_for("challenge.display_challenges"))

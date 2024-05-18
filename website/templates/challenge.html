@@ -46,9 +46,13 @@
                 <div class="card-text">{{challenge[1]}}</div>
                 <br/> 
             </div>
-            <div align="center">
-                <button type="submit" class="btn btn-lg btn-primary" style="background-color: #018079; border-color: #018079;">Finish</button>
-                <button type="button" class="btn btn-lg btn-secondary" style="background-color: #802D01; border-color: #802D01;">Resign</button>
+            <div class="text-center">
+                <form action="{{ url_for('challenge.finish_challenge', id_challenge=challenge[0].id_challenge) }}" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-lg btn-primary" style="background-color: #018079; border-color: #018079;">Finish</button>
+                </form>
+                <form action="{{ url_for('challenge.resign_challenge', id_challenge=challenge[0].id_challenge) }}" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-lg btn-secondary" style="background-color: #802D01; border-color: #802D01;">Resign</button>
+                </form>
             </div>
             <br/>   
         </div>
