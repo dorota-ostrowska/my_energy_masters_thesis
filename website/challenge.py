@@ -25,7 +25,6 @@ from datetime import date, timedelta
 from sqlalchemy import or_
 
 
-
 challenge = Blueprint("challenge", __name__)
 
 
@@ -170,7 +169,16 @@ def _add_challenge_to_customized_challenge(id_challenge: int) -> None:
         id_challenge (int): The ID of the challenge to be added to the CustomizedChallenge table.
     """
     today: date = date.today()
-    next_week: date = today + timedelta(days=7)
+    next_week: date = today + timedelta(days=8)
+    next_month: date = today + timedelta(days=31)
+    challenge_type = get_challenge_type(id_challenge)
+    if challenge_type == "S":
+        end_date = next_week
+    else:
+        end_date = next_month
+    challenge_exists = CustomizedChallenge.query.filter_by(id_challenge=id_challenge, id_client=current_user.id_client).first()
+    if challenge_exists:
+        return
     customized_challenge = CustomizedChallenge(
         id_customized_challenge=get_next_id(
             db, CustomizedChallenge.id_customized_challenge
@@ -180,7 +188,7 @@ def _add_challenge_to_customized_challenge(id_challenge: int) -> None:
         is_done=False,
         points_scored=0,
         start_date=today,
-        end_date=next_week,
+        end_date=end_date,
     )
     db.session.add(customized_challenge)
     db.session.commit()
