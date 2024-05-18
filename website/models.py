@@ -73,6 +73,7 @@ class Client(db.Model, UserMixin):
     name = db.Column(db.String(50))
     surname = db.Column(db.String(50))
     pesel = db.Column(db.String(11), unique=True)
+    points = db.Column(db.Integer)
     id_clients_mailing_address = db.Column(
         db.Integer, db.ForeignKey("address.id_address")
     )

@@ -3,6 +3,7 @@ A view.
 User's challenges.
 """
 
+import random
 from flask import Blueprint, flash, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 
@@ -11,6 +12,7 @@ from website.customized_tasks import (
     get_task_replace_bulbs,
     get_task_sleep_mode,
 )
+from website.game.badges import all_badges
 
 from .models import (
     Client,
@@ -21,6 +23,7 @@ from . import db
 from .utils import get_next_id
 from datetime import date, timedelta
 from sqlalchemy import or_
+
 
 
 challenge = Blueprint("challenge", __name__)
@@ -297,13 +300,37 @@ def finish_challenge(id_challenge):
     customized_challenge = CustomizedChallenge.query.filter_by(
         id_client=current_user.id_client, id_challenge=id_challenge
     ).first()
+    client = Client.query.filter_by(
+        id_client=current_user.id_client
+    ).first()
     if customized_challenge:
         customized_challenge.is_done = True
+        ch_type: str = get_challenge_type(customized_challenge.id_challenge)
+        random_badge = get_random_badge(ch_type)
+        customized_challenge.points_scored = random_badge.points
+        client.points = client.points + random_badge.points
         db.session.commit()
         flash("Challenge finished successfully!", "success")
+        return redirect(url_for('challenge.congratulations', badge_name=random_badge.name))
     else:
         flash("Challenge not found or not started.", "error")
     return redirect(url_for("challenge.display_challenges"))
+
+
+@challenge.route("/congratulations/<badge_name>")
+@login_required
+def congratulations(badge_name):
+    """
+    Display the congratulations page with the earned badge.
+    """
+    points = 0
+    pic = ""
+    for badge in all_badges:
+        if badge.name == badge_name:
+            points = badge.points
+            pic = badge.picture
+            break
+    return render_template("congratulations.html", badge_name=badge_name, points = points, pic = pic, username=current_user.username)
 
 
 @challenge.route("/resign-challenge/<int:id_challenge>", methods=["POST"])
@@ -322,3 +349,18 @@ def resign_challenge(id_challenge):
     else:
         flash("Challenge not found or not started.", "error")
     return redirect(url_for("challenge.display_challenges"))
+
+
+def get_random_badge(ch_type: str):
+    if ch_type not in ["S", "B"]:
+        raise ValueError("Challenge type must be either 'S' or 'B'")
+    if ch_type == "S":
+        weights = [badge.randomness_small_challenge for badge in all_badges]
+    else:
+        weights = [badge.randomness_big_challenge for badge in all_badges]
+    selected_badge = random.choices(all_badges, weights=weights, k=1)[0]
+    return selected_badge
+
+def get_challenge_type(id_challenge: int) -> str:
+    challenge = Challenge.query.filter_by(id_challenge=id_challenge).first()
+    return challenge.type_small_big

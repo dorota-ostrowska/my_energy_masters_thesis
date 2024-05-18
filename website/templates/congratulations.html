@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Congratulations!</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <style>
+        .badge-image {
+            width: 300px;  
+            height: 300px; 
+            object-fit: cover;
+        }
+        .center-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5 center-content">
+        <div class="jumbotron text-center center-content">
+            <h1 class="display-4">Congratulations, {{ username }}!</h1>
+            <p class="lead">You have earned the <strong>{{ badge_name }}</strong> ({{ points }} points)!</p>
+            <img src="{{ url_for('static', filename='images/badges/' + pic) }}" alt="badge" class="img-fluid badge-image">
+            <p>Keep up the great work!</p>
+            <a class="btn btn-primary btn-lg" href="{{ url_for('challenge.display_challenges') }}" role="button">Back to challenges</a>
+        </div>
+    </div>
+</body>
+</html>

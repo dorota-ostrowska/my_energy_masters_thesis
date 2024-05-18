@@ -31,6 +31,7 @@ CREATE TABLE Client (
     name varchar(50)  NOT NULL,
     surname varchar(50)  NOT NULL,
     pesel varchar(11)  NOT NULL,
+    points int NULL,
     id_clients_mailing_address int  NOT NULL,
     email varchar(50)  NULL,
     password text  NULL,

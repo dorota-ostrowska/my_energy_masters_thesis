@@ -82,7 +82,7 @@ def register():
             client_is_created = create_client(client, username, email, password_1)
             if client_is_created:
                 login_user(client, remember=True)
-                return redirect(url_for("challange.questionnaire"))
+                return redirect(url_for("challenge.questionnaire"))
     return render_template("register.html", user=current_user)
 
 

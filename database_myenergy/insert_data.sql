@@ -5,12 +5,12 @@ VALUES
 	(3, 'Jesionowa', 4, '1c', '06-245', 'Szczecin', '');
 
 
-INSERT INTO client(id_client, username, name, surname, pesel, id_clients_mailing_address, 
+INSERT INTO client(id_client, username, name, surname, pesel, points, id_clients_mailing_address, 
 	email, password, member_of_challenge, number_of_rooms, number_of_residents)
 VALUES 
-	(1, null, 'Dorota', 'Ostrowska', '12345678999', 1, null, null, null, null, null),
-	(2, null, 'Aleksandra', 'Nowak', '74638593645', 2, null, null, null, null, null),
-	(3, null, 'Olga', 'Kowalska', '84736257378', 3, null, null, null, null, null);
+	(1, null, 'Dorota', 'Ostrowska', '12345678999', null, 1, null, null, null, null, null),
+	(2, null, 'Aleksandra', 'Nowak', '74638593645', null, 2, null, null, null, null, null),
+	(3, null, 'Olga', 'Kowalska', '84736257378', null, 3, null, null, null, null, null);
 
 
 INSERT INTO offer(id_offer, name, tarrif, pv_installation)
