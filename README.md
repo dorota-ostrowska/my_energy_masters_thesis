@@ -28,7 +28,24 @@ We are MyEnergy, more than just an electricity seller. Our mission is to empower
 * Python
 
 ## Getting started
-
+1. Open Docker Desktop application.
+2. Go to a main folder of project.
+   ```bash
+   cd masters_thesis_s27951
+   ```
+3. Run a script in terminal.
+   ```bash
+   ./run_postgresql.sh
+   ```
+4. Create a virtual environment.
+   ```bash
+   python -m venv venv
+   source venv/bin/activate
+   ```
+5. Install necessary requirements.
+   ```bash
+   pip install -r requirements.txt
+   ```
 ...
 
 [⬆ Back to top](#table-of-contents)
