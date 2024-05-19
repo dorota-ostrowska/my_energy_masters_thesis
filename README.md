@@ -58,20 +58,22 @@ We are MyEnergy, more than just an electricity seller. Our mission is to empower
 4. Create tables in the database and add init data to them.
    Run scripts from database_myenergy folder.
 
-5. Create meter readings in db (add appropriate dates).
+5. Create your own appconfig.json using as na example appconfig_example.json file.
+
+6. Create meter readings in db (add appropriate dates).
 
    ```bash
    python consumption_generator.py
    ```
 
-6. Create a virtual environment.
+7. Create a virtual environment.
 
    ```bash
    python -m venv venv
    source venv/bin/activate
    ```
 
-7. Install necessary requirements.
+8. Install necessary requirements.
 
    ```bash
    pip install -r requirements.txt
