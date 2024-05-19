@@ -2,12 +2,12 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 import json
-from typing import Dict
+from website.secret import FLASK_KEY
 
 app = Flask(__name__)
-app.secret_key = "super secret key"
+app.secret_key = FLASK_KEY
 with open("./appconfig.json", "r") as file:
-    json_data: Dict = json.load(file)
+    json_data: dict = json.load(file)
 app.config["SQLALCHEMY_DATABASE_URI"] = (
     f"postgresql://{json_data['user']}:{json_data['password']}@{json_data['host']}/{json_data['database']}"
 )

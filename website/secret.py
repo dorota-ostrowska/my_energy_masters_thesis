@@ -1,1 +1,2 @@
 WEATHER_API_KEY = "f313dbf6d3a3425188f143000242204"
+FLASK_KEY = "super secret key"
