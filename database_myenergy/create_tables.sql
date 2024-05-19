@@ -77,8 +77,8 @@ CREATE TABLE Invoice (
     id_invoice int  NOT NULL,
     id_meter int  NOT NULL,
     date_of_issue timestamp  NOT NULL,
-    amount_to_pay decimal(2,0)  NOT NULL,
-    used_energy decimal(2,0)  NOT NULL,
+    amount_to_pay decimal(5,5)  NOT NULL,
+    used_energy decimal(5,5)  NOT NULL,
     CONSTRAINT Invoice_pk PRIMARY KEY (id_invoice)
 );
 
@@ -111,9 +111,9 @@ CREATE TABLE Post (
 
 -- Table: Reading
 CREATE TABLE Reading (
-    id_reading int  NOT NULL,
+    id_reading SERIAL,
     time timestamp  NOT NULL,
-    used_energy decimal(2,0)  NOT NULL,
+    used_energy decimal(5,5)  NOT NULL,
     id_meter int  NOT NULL,
     CONSTRAINT Reading_pk PRIMARY KEY (id_reading)
 );
