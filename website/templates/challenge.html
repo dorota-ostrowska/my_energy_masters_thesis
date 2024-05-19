@@ -9,6 +9,12 @@
     .inner-container {
         margin: 20px;
     }
+    .user-points {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
+    }
 </style>
 </head>
 <body>
@@ -34,6 +40,7 @@
 </nav>
 
 <div class="inner-container">
+    <div class="user-points">Your energy points: {{ current_user.points }} 💎</div>
     <h1 align="center">🌿Challenges🍀</h1>
     <br/> 
     <h2>🌞Current challenges🌞</h2>

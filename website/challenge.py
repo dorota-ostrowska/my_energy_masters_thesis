@@ -120,6 +120,7 @@ def display_challenges():
         challenges_unlocked=_customize_task_desciptions(
             _get_unlocked_challenges(current_user.id_client),
         ),
+        current_user=current_user
     )
 
 
