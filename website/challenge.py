@@ -175,7 +175,9 @@ def _add_challenge_to_customized_challenge(id_challenge: int) -> None:
         end_date = next_week
     else:
         end_date = next_month
-    challenge_exists = CustomizedChallenge.query.filter_by(id_challenge=id_challenge, id_client=current_user.id_client).first()
+    challenge_exists = CustomizedChallenge.query.filter_by(
+        id_challenge=id_challenge, id_client=current_user.id_client
+    ).first()
     if challenge_exists:
         return
     customized_challenge = CustomizedChallenge(
@@ -304,9 +306,7 @@ def finish_challenge(id_challenge):
     customized_challenge = CustomizedChallenge.query.filter_by(
         id_client=current_user.id_client, id_challenge=id_challenge
     ).first()
-    client = Client.query.filter_by(
-        id_client=current_user.id_client
-    ).first()
+    client = Client.query.filter_by(id_client=current_user.id_client).first()
     if customized_challenge:
         customized_challenge.is_done = True
         ch_type: str = get_challenge_type(customized_challenge.id_challenge)
@@ -315,7 +315,9 @@ def finish_challenge(id_challenge):
         client.points = client.points + random_badge.points
         db.session.commit()
         flash("Challenge finished successfully!", "success")
-        return redirect(url_for('challenge.congratulations', badge_name=random_badge.name))
+        return redirect(
+            url_for("challenge.congratulations", badge_name=random_badge.name)
+        )
     else:
         flash("Challenge not found or not started.", "error")
     return redirect(url_for("challenge.display_challenges"))
@@ -334,7 +336,13 @@ def congratulations(badge_name):
             points = badge.points
             pic = badge.picture
             break
-    return render_template("congratulations.html", badge_name=badge_name, points = points, pic = pic, username=current_user.username)
+    return render_template(
+        "congratulations.html",
+        badge_name=badge_name,
+        points=points,
+        pic=pic,
+        username=current_user.username,
+    )
 
 
 @challenge.route("/resign-challenge/<int:id_challenge>", methods=["POST"])
@@ -364,6 +372,7 @@ def get_random_badge(ch_type: str):
         weights = [badge.randomness_big_challenge for badge in all_badges]
     selected_badge = random.choices(all_badges, weights=weights, k=1)[0]
     return selected_badge
+
 
 def get_challenge_type(id_challenge: int) -> str:
     challenge = Challenge.query.filter_by(id_challenge=id_challenge).first()

@@ -37,4 +37,5 @@ class DiamondDraught:
     randomness_big_challenge = 0.2
     picture = "diamond_draughtjpg"
 
+
 all_badges = [EmeraldLeaf, GeothermalRuby, SapphireWave, GoldenSunbeam, DiamondDraught]

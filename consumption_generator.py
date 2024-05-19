@@ -32,6 +32,7 @@ Requirements:
     - A PostgreSQL database (the scripts to create it are located in the database_myenergy folder)
     - A configuration file named 'appconfig.json' with database connection details
 """
+
 import psycopg2
 import psycopg2.extras
 import json
@@ -51,7 +52,9 @@ class ConsumptionGenerator:
         self.db_cursor: psycopg2.extensions.cursor | None
         self.db_connection, self.db_cursor = self.open_connection_with_db()
 
-    def open_connection_with_db(self) -> tuple[psycopg2.extensions.cursor | None, psycopg2.extensions.cursor | None]:
+    def open_connection_with_db(
+        self,
+    ) -> tuple[psycopg2.extensions.cursor | None, psycopg2.extensions.cursor | None]:
         """
         Opens a connection with the PostgreSQL database.
 
@@ -142,7 +145,9 @@ class ConsumptionGenerator:
         self.db_cursor.execute(query)
         return [row[0] for row in self.db_cursor.fetchall()]
 
-    def add_readings_to_table(self, readings: list[tuple[int, str, float, int]]) -> None:
+    def add_readings_to_table(
+        self, readings: list[tuple[int, str, float, int]]
+    ) -> None:
         """
         Adds multiple readings to the Reading table.
 
@@ -160,7 +165,7 @@ class ConsumptionGenerator:
         1. Constructs an SQL query for inserting multiple readings.
         2. Uses `psycopg2.extras.execute_values` to execute the query and insert the readings.
         3. Prints a success message indicating the number of records inserted.
-        
+
         In case of an error during the insertion process, it catches the exception and prints an error message.
 
         Example usage:
@@ -174,11 +179,18 @@ class ConsumptionGenerator:
         try:
             query: str = "INSERT INTO reading (time, used_energy, id_meter) VALUES %s"
             psycopg2.extras.execute_values(self.db_cursor, query, readings)
-            print(f"{len(readings)} records inserted successfully into the reading table")
+            print(
+                f"{len(readings)} records inserted successfully into the reading table"
+            )
         except Exception as error:
             print("Failed to insert records into the reading table,", error)
 
-    def generate_readings(self, start_date: datetime.datetime, end_date: datetime.datetime, interval_minutes: int = 15) -> None:
+    def generate_readings(
+        self,
+        start_date: datetime.datetime,
+        end_date: datetime.datetime,
+        interval_minutes: int = 15,
+    ) -> None:
         """
         Generates readings for each meter in the database over a specified date range with the given interval.
 
