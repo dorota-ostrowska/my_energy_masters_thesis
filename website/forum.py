@@ -13,7 +13,7 @@ from .models import (
     Favourite,
 )
 from . import db
-from .utils import get_next_id
+
 
 forum = Blueprint("forum", __name__)
 
@@ -52,7 +52,6 @@ def create_post():
             post = Post(
                 text=post_content,
                 id_author=current_user.id_client,
-                id_post=get_next_id(db, Post.id_post),
             )
             db.session.add(post)
             db.session.commit()
@@ -131,7 +130,6 @@ def create_comment(id_post):
                 text=text,
                 id_author=current_user.id_client,
                 id_post=id_post,
-                id_comment=get_next_id(db, Comment.id_comment),
             )
             db.session.add(comment)
             db.session.commit()
@@ -191,7 +189,6 @@ def like(id_post):
         like = Favourite(
             id_author=current_user.id_client,
             id_post=id_post,
-            id_like=get_next_id(db, Favourite.id_like),
         )
         db.session.add(like)
         db.session.commit()

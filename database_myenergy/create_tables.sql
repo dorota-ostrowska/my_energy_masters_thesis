@@ -16,7 +16,7 @@ CREATE TABLE Address (
 
 -- Table: Challenge
 CREATE TABLE Challenge (
-    id_challenge int  NOT NULL,
+    id_challenge SERIAL,
     name varchar(50)  NOT NULL,
     type_small_big char(1)  NOT NULL,
     description text  NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE Client (
     name varchar(50)  NOT NULL,
     surname varchar(50)  NOT NULL,
     pesel varchar(11)  NOT NULL,
-    points int NULL,
+    points int  NOT NULL,
     id_clients_mailing_address int  NOT NULL,
     email varchar(50)  NULL,
     password text  NULL,
@@ -43,7 +43,7 @@ CREATE TABLE Client (
 
 -- Table: Comment
 CREATE TABLE Comment (
-    id_comment int  NOT NULL,
+    id_comment BIGSERIAL,
     text text  NOT NULL,
     date_created timestamp  NOT NULL,
     id_post int  NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE Comment (
 
 -- Table: CustomizedChallenge
 CREATE TABLE CustomizedChallenge (
-    id_customized_challenge int  NOT NULL,
+    id_customized_challenge BIGSERIAL,
     id_client int  NOT NULL,
     id_challenge int  NOT NULL,
     is_done boolean  NOT NULL,
@@ -65,7 +65,7 @@ CREATE TABLE CustomizedChallenge (
 
 -- Table: Favourite
 CREATE TABLE Favourite (
-    id_like int  NOT NULL,
+    id_like BIGSERIAL,
     date_created timestamp  NOT NULL,
     id_post int  NOT NULL,
     id_author int  NOT NULL,
@@ -74,7 +74,7 @@ CREATE TABLE Favourite (
 
 -- Table: Invoice
 CREATE TABLE Invoice (
-    id_invoice int  NOT NULL,
+    id_invoice BIGSERIAL,
     id_meter int  NOT NULL,
     date_of_issue timestamp  NOT NULL,
     amount_to_pay decimal(5,5)  NOT NULL,
@@ -84,7 +84,7 @@ CREATE TABLE Invoice (
 
 -- Table: Meter
 CREATE TABLE Meter (
-    id_meter int  NOT NULL,
+    id_meter BIGSERIAL,
     id_client int  NOT NULL,
     ppe varchar(18)  NOT NULL,
     id_offer int  NOT NULL,
@@ -93,7 +93,7 @@ CREATE TABLE Meter (
 
 -- Table: Offer
 CREATE TABLE Offer (
-    id_offer int  NOT NULL,
+    id_offer SERIAL,
     name varchar(50)  NOT NULL,
     tarrif varchar(50)  NOT NULL,
     pv_installation boolean  NOT NULL,
@@ -102,7 +102,7 @@ CREATE TABLE Offer (
 
 -- Table: Post
 CREATE TABLE Post (
-    id_post int  NOT NULL,
+    id_post BIGSERIAL,
     text text  NOT NULL,
     date_created timestamp  NOT NULL,
     id_author int  NOT NULL,
@@ -111,7 +111,7 @@ CREATE TABLE Post (
 
 -- Table: Reading
 CREATE TABLE Reading (
-    id_reading SERIAL,
+    id_reading BIGSERIAL,
     time timestamp  NOT NULL,
     used_energy decimal(5,5)  NOT NULL,
     id_meter int  NOT NULL,

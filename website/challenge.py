@@ -20,7 +20,6 @@ from .models import (
     Challenge,
 )
 from . import db
-from .utils import get_next_id
 from datetime import date, timedelta
 from sqlalchemy import or_
 
@@ -180,9 +179,6 @@ def _add_challenge_to_customized_challenge(id_challenge: int) -> None:
     if challenge_exists:
         return
     customized_challenge = CustomizedChallenge(
-        id_customized_challenge=get_next_id(
-            db, CustomizedChallenge.id_customized_challenge
-        ),
         id_client=current_user.id_client,
         id_challenge=id_challenge,
         is_done=False,
