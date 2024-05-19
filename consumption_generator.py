@@ -189,7 +189,7 @@ class ConsumptionGenerator:
         self,
         start_date: datetime.datetime,
         end_date: datetime.datetime,
-        interval_minutes: int = 15,
+        interval_minutes: int = 60,
     ) -> None:
         """
         Generates readings for each meter in the database over a specified date range with the given interval.
@@ -201,7 +201,7 @@ class ConsumptionGenerator:
         Parameters:
             start_date (datetime): The starting date and time for generating readings.
             end_date (datetime): The ending date and time for generating readings.
-            interval_minutes (int, optional): The interval between readings in minutes. Default is 15 minutes.
+            interval_minutes (int, optional): The interval between readings in minutes. Default is 60 minutes.
 
         The method performs the following steps:
         1. Fetches all meter IDs from the database.
@@ -237,7 +237,7 @@ class ConsumptionGenerator:
 
 
 start_date: datetime.datetime = datetime.datetime(2024, 1, 1)
-end_date: datetime.datetime = datetime.datetime(2024, 1, 2)
+end_date: datetime.datetime = datetime.datetime(2024, 5, 31)
 consumption_generator = ConsumptionGenerator()
 consumption_generator.generate_readings(start_date, end_date)
 consumption_generator.close_connection_with_db()

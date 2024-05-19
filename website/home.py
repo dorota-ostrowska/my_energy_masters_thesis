@@ -1,8 +1,18 @@
-from flask import Blueprint, render_template
+from datetime import datetime, timedelta
+
+from flask import Blueprint, render_template, request
 from flask_login import login_required, current_user
 
+from website.models import Meter, Reading
+import pandas as pd
+import matplotlib
+import matplotlib.pyplot as plt
+import io
+import base64
+import matplotlib.dates as mdates
 
 home = Blueprint("home", __name__)
+matplotlib.use('Agg')
 
 
 @home.route("/")
@@ -18,3 +28,56 @@ def display_home():
 @login_required
 def client_logged_in():
     return render_template("dashboard.html", user=current_user)
+
+
+@home.route('/chart')
+@login_required
+def display_chart_of_energy_usage():
+    id_meter = Meter.query.filter_by(id_client=current_user.id_client).first().id_meter
+    start_date = request.args.get('start_date')
+    end_date = request.args.get('end_date')
+    if start_date and end_date:
+        start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+        end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+    else:
+        start_date = datetime.now().date()
+        end_date = start_date
+    if end_date < start_date:
+        start_date, end_date = end_date, start_date
+    df = get_readings(id_meter, start_date, end_date)
+    chart = create_chart(df, start_date, end_date)
+    return render_template('usage_chart.html', chart_data=chart)
+
+def get_readings(id_meter: int, start_date: datetime, end_date: datetime) -> pd.DataFrame:
+    readings = Reading.query.filter(
+        Reading.id_meter == id_meter,
+        Reading.time >= start_date,
+        Reading.time < end_date + timedelta(days=1)
+    ).all()
+    data = {
+        "time": [reading.time for reading in readings],
+        "used_energy": [reading.used_energy for reading in readings]
+    }
+    df = pd.DataFrame(data)
+    return df
+
+def create_chart(df: pd.DataFrame, start_date: datetime, end_date: datetime) -> bytes:
+    _, ax = plt.subplots()
+    if (end_date - start_date).days == 0:  # only one day - line chart
+        df.plot(x='time', y='used_energy', ax=ax, kind='line')
+        ax.set_title(f'Daily energy consumption on {start_date}')
+        ax.set_xlabel('time')
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%H'))
+        ax.set_ylabel('usage (kWh)')
+    else:  # more days - bar chart
+        df['date'] = pd.to_datetime(df['time']).dt.date
+        df_grouped = df.groupby('date').agg({'used_energy': 'sum'}).reset_index()
+        df_grouped.plot(x='date', y='used_energy', ax=ax, kind='bar')
+        ax.set_title(f'Energy consumption in the period {start_date} - {end_date}')
+        ax.set_xlabel('date')
+        ax.set_ylabel('usage (kWh)')
+    png_image = io.BytesIO()
+    plt.savefig(png_image, format='png')
+    png_image.seek(0)
+    png_base64 = base64.b64encode(png_image.getvalue()).decode('ascii')
+    return png_base64

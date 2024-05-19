@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Congratulations!</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-        <style>
-        .badge-image {
-            width: 300px;  
-            height: 300px; 
-            object-fit: cover;
+    <title>Energy consumption</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <style>
+        .inner-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: url("../static/images/nature_4.JPG") no-repeat;
+            background-size: cover;
+            background-position: center;
         }
         .center-content {
             display: flex;
@@ -22,7 +26,7 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <button class="navbar-toggler" type="button"
             data-bs-toggle="collapse" data-bs-target="#navbar"><span
@@ -42,14 +46,19 @@
     </div>
 </div>
 </nav>
-    <div class="container mt-5 center-content">
-        <div class="jumbotron text-center center-content">
-            <h1 class="display-4">Congratulations, {{ username }}!</h1>
-            <p class="lead">You have earned the <strong>{{ badge_name }}</strong> ({{ points }} points)!</p>
-            <img src="{{ url_for('static', filename='images/badges/' + pic) }}" alt="badge" class="img-fluid badge-image">
-            <p>Keep up the great work!</p>
-            <a class="btn btn-primary btn-lg" href="{{ url_for('challenge.display_challenges') }}" role="button">Back to challenges</a>
-        </div>
+<div class="inner-container">
+    <div class="center-content">
+    <h1>Energy consumption</h1>
+    <form method="GET" action="{{ url_for('home.display_chart_of_energy_usage') }}">
+        <label for="start_date">Select start date:</label>
+        <input type="date" id="start_date" name="start_date" required>
+        <label for="end_date">Select end date:</label>
+        <input type="date" id="end_date" name="end_date" required>
+        <input type="submit" value="Submit">
+    </form>
+    <img src="data:image/png;base64,{{ chart_data }}" alt="Energy consumption">
+    <a class="btn btn-primary btn-lg" href="{{ url_for('home.display_home') }}" role="button">Back</a>
+    </div>
     </div>
 </body>
 </html>
