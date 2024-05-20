@@ -40,6 +40,10 @@ def display_forum():
         Rendered HTML template displaying all posts.
     """
     posts = Post.query.all()
+    for post in posts:
+        for comment in post.comments:
+            comment.date_created = comment.date_created.strftime("%Y-%m-%d %H:%M:%S")
+        post.date_created = post.date_created.strftime("%Y-%m-%d %H:%M:%S")
     return render_template("forum.html", user=current_user, posts=posts)
 
 
@@ -114,6 +118,8 @@ def display_posts(username):
         flash("No user with that username exists.", category="error")
         return redirect(url_for("forum.display_forum"))
     posts = client.posts
+    for post in posts:
+        post.date_created = post.date_created.strftime("%Y-%m-%d %H:%M:%S")
     return render_template(
         "posts.html", user=current_user, posts=posts, username=username
     )
