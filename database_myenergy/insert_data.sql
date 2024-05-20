@@ -1,8 +1,8 @@
 INSERT INTO address(id_address, street, house_number, local_number, zip_code, city, additional_info)
 VALUES 
-	(1, 'Koszykowa', 64, '1c', '03-765', 'Sopot', ''),
-	(2, 'Kwiatowa', 12, '1c', '03-353', 'Sopot', '11th level'),
-	(3, 'Jesionowa', 4, '1c', '06-245', 'Szczecin', '');
+	(1, 'Koszykowa', 64, '1c', '01-911', 'Warszawa', ''),
+	(2, 'Kwiatowa', 12, '45', '81-700', 'Sopot', '11th level'),
+	(3, 'Jesionowa', 4, '3', '81-701', 'Sopot', '');
 
 
 INSERT INTO client(id_client, username, name, surname, pesel, points, id_clients_mailing_address, 
@@ -10,13 +10,13 @@ INSERT INTO client(id_client, username, name, surname, pesel, points, id_clients
 VALUES 
 	(1, null, 'Dorota', 'Ostrowska', '12345678999', 0, 1, null, null, null, null, null),
 	(2, null, 'Aleksandra', 'Nowak', '74638593645', 0, 2, null, null, null, null, null),
-	(3, null, 'Olga', 'Kowalska', '84736257378', 0, 3, null, null, null, null, null);
+	(3, null, 'Kamil', 'Kowalski', '84736257378', 0, 3, null, null, null, null, null);
 
 
-INSERT INTO offer(name, tarrif, pv_installation)
+INSERT INTO offer(name, tarrif, pv_installation, kwh_price)
 VALUES 
-	('oszczedna zwykla', 'G11', 'n'),
-	('oszczedna pv', 'G11', 'y');
+	('Economical family', 'G11', FALSE, 1.11),
+	('Optimal household', 'G11', FALSE, 1.27);
 
 
 INSERT INTO meter(id_client, ppe, id_offer)

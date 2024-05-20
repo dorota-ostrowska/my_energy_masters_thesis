@@ -1,5 +1,4 @@
 -- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2024-05-02 20:25:52.867
 
 -- tables
 -- Table: Address
@@ -99,6 +98,7 @@ CREATE TABLE Offer (
     name varchar(50)  NOT NULL,
     tarrif varchar(50)  NOT NULL,
     pv_installation boolean  NOT NULL,
+    kwh_price  decimal(7,5) NOT NULL,
     CONSTRAINT Offer_pk PRIMARY KEY (id_offer)
 );
 
