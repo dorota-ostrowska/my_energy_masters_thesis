@@ -6,6 +6,7 @@ DECLARE
     total_amount DECIMAL(10,5);  
     existing_invoice_id INT;
     invoice_billing_period DATE;
+    energy_price DECIMAL(10,5); 
 BEGIN
     -- Calculate the date for the last month
     last_month := date_trunc('month', NEW.time) - INTERVAL '1 month';
@@ -31,8 +32,16 @@ BEGIN
             AND time >= last_month 
             AND time < date_trunc('month', NEW.time);
 
-            -- Calculate the amount to pay (1 kWh = 1 PLN)
-            total_amount := total_energy * 1;
+            -- Calculate a price of kWh.
+            SELECT offer.kwh_price
+            INTO energy_price
+            FROM offer
+            INNER JOIN meter
+            ON meter.id_offer = offer.id_offer
+            WHERE id_meter = NEW.id_meter;
+
+            -- Calculate the amount to pay
+            total_amount := total_energy * energy_price;
 
             -- Insert a record into the Invoice table
             INSERT INTO Invoice (id_meter, date_of_issue, amount_to_pay, used_energy, billing_period, is_it_paid)
