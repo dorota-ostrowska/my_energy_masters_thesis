@@ -162,9 +162,7 @@ def create_chart(df: pd.DataFrame, start_date: datetime, end_date: datetime) -> 
     """
     _, ax = plt.subplots()
     if (end_date - start_date).days == 0:  # only one day - line chart
-        df.plot(
-            x="time", y="used_energy", ax=ax, kind="line", color="#018079"
-        )
+        df.plot(x="time", y="used_energy", ax=ax, kind="line", color="#018079")
         ax.set_title(f"Daily energy consumption on {start_date}")
         ax.set_xlabel("time")
         ax.xaxis.set_major_formatter(mdates.DateFormatter("%H"))
@@ -172,9 +170,7 @@ def create_chart(df: pd.DataFrame, start_date: datetime, end_date: datetime) -> 
     else:  # more days - bar chart
         df["date"] = pd.to_datetime(df["time"]).dt.date
         df_grouped = df.groupby("date").agg({"used_energy": "sum"}).reset_index()
-        df_grouped.plot(
-            x="date", y="used_energy", ax=ax, kind="bar", color="#018079"
-        )
+        df_grouped.plot(x="date", y="used_energy", ax=ax, kind="bar", color="#018079")
         ax.set_title(f"Energy consumption in the period {start_date} - {end_date}")
         ax.set_xlabel("date")
         ax.set_ylabel("usage (kWh)")
