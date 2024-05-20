@@ -289,6 +289,7 @@ class Offer(db.Model, UserMixin):
     name = db.Column(db.String(50))
     tarrif = db.Column(db.String(50))
     pv_installation = db.Column(db.Boolean)
+    kwh_price = db.Column(db.Float)
     meters = db.relationship("Meter", backref="meters_in_offer")
 
     def __repr__(self):
