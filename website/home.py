@@ -10,7 +10,6 @@ import matplotlib.pyplot as plt
 import io
 import base64
 import matplotlib.dates as mdates
-from sqlalchemy import func
 
 home = Blueprint("home", __name__)
 matplotlib.use('Agg')

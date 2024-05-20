@@ -2,7 +2,7 @@
 A view.
 User's challenges.
 """
-
+from datetime import datetime, timedelta
 import random
 from flask import Blueprint, flash, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
@@ -22,6 +22,7 @@ from .models import (
 from . import db
 from datetime import date, timedelta
 from sqlalchemy import or_
+from sqlalchemy import func, extract
 
 
 challenge = Blueprint("challenge", __name__)
@@ -378,3 +379,94 @@ def get_random_badge(ch_type: str):
 def get_challenge_type(id_challenge: int) -> str:
     challenge = Challenge.query.filter_by(id_challenge=id_challenge).first()
     return challenge.type_small_big
+
+@challenge.route("/daily-ranking")
+@login_required
+def daily_ranking():
+    """
+    Display the daily ranking of users based on points scored.
+    """
+    ranking = daily_points_ranking()
+    return render_template("ranking.html", ranking=ranking, title="Daily ranking of Energy Wizards 🪄")
+
+
+@challenge.route("/weekly-ranking")
+@login_required
+def weekly_ranking():
+    """
+    Display the weekly ranking of users based on points scored.
+    """
+    ranking = weekly_points_ranking()
+    return render_template("ranking.html", ranking=ranking, title="Weekly ranking of Energy Wizards 🧙‍♂️")
+
+
+@challenge.route("/monthly-ranking")
+@login_required
+def monthly_ranking():
+    """
+    Display the monthly ranking of users based on points scored.
+    """
+    ranking = monthly_points_ranking()
+    return render_template("ranking.html", ranking=ranking, title="Monthly ranking of Energy Wizards 🧙")
+
+
+@challenge.route("/overall-ranking")
+@login_required
+def overall_ranking():
+    """
+    Display the overall ranking of users based on points scored.
+    """
+    ranking = overall_points_ranking()
+    return render_template("ranking.html", ranking=ranking, title="Overall ranking of Energy Wizards ✨")
+
+
+def monthly_points_ranking():
+    current_month = datetime.now().month
+    current_year = datetime.now().year
+
+    monthly_ranking = db.session.query(
+        Client.username,
+        func.sum(CustomizedChallenge.points_scored).label('total_points')
+    ).join(CustomizedChallenge).filter(
+        extract('month', CustomizedChallenge.start_date) == current_month,
+        extract('year', CustomizedChallenge.start_date) == current_year
+    ).group_by(Client.username).order_by(func.sum(CustomizedChallenge.points_scored).desc()).all()
+
+    return monthly_ranking
+
+def overall_points_ranking():
+    # Oblicz ogólny ranking punktów dla wszystkich użytkowników
+    overall_ranking = db.session.query(
+        Client.username,
+        func.sum(CustomizedChallenge.points_scored).label('total_points')
+    ).join(CustomizedChallenge).group_by(Client.username).order_by(func.sum(CustomizedChallenge.points_scored).desc()).all()
+
+    return overall_ranking
+
+def daily_points_ranking():
+    current_date = datetime.now().date()
+
+    daily_ranking = db.session.query(
+        Client.username,
+        func.sum(CustomizedChallenge.points_scored).label('total_points')
+    ).join(CustomizedChallenge).filter(
+        extract('day', CustomizedChallenge.start_date) == current_date.day,
+        extract('month', CustomizedChallenge.start_date) == current_date.month,
+        extract('year', CustomizedChallenge.start_date) == current_date.year
+    ).group_by(Client.username).order_by(func.sum(CustomizedChallenge.points_scored).desc()).all()
+
+    return daily_ranking
+
+def weekly_points_ranking():
+    current_date = datetime.now().date()
+    start_of_week = current_date - timedelta(days=current_date.weekday())
+    end_of_week = start_of_week + timedelta(days=6)
+
+    weekly_ranking = db.session.query(
+        Client.username,
+        func.sum(CustomizedChallenge.points_scored).label('total_points')
+    ).join(CustomizedChallenge).filter(
+        CustomizedChallenge.start_date.between(start_of_week, end_of_week)
+    ).group_by(Client.username).order_by(func.sum(CustomizedChallenge.points_scored).desc()).all()
+
+    return weekly_ranking
