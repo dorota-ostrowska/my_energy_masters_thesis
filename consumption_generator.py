@@ -236,7 +236,7 @@ class ConsumptionGenerator:
         self.db_connection.commit()
 
 
-start_date: datetime.datetime = datetime.datetime(2024, 1, 1)
+start_date: datetime.datetime = datetime.datetime(2024, 4, 1)
 end_date: datetime.datetime = datetime.datetime(2024, 5, 31)
 consumption_generator = ConsumptionGenerator()
 consumption_generator.generate_readings(start_date, end_date)

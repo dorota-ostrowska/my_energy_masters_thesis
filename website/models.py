@@ -215,3 +215,5 @@ class Invoice(db.Model, UserMixin):
     date_of_issue = db.Column(db.Date)
     amount_to_pay = db.Column(db.Float)
     used_energy = db.Column(db.Float)
+    billing_period = db.Column(db.DateTime)
+    is_it_paid = db.Column(db.Boolean)
