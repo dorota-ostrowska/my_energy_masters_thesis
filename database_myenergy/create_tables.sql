@@ -1,5 +1,4 @@
 -- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2024-04-18 22:09:38.451
 
 -- tables
 -- Table: Address
@@ -7,28 +6,43 @@ CREATE TABLE Address (
     id_address int  NOT NULL,
     street varchar(50)  NOT NULL,
     house_number varchar(5)  NOT NULL,
+    local_number varchar(5)  NOT NULL,
     zip_code varchar(6)  NOT NULL,
     city varchar(50)  NOT NULL,
     additional_info varchar(50)  NULL,
     CONSTRAINT Address_pk PRIMARY KEY (id_address)
 );
 
+-- Table: Challenge
+CREATE TABLE Challenge (
+    id_challenge SERIAL,
+    name varchar(50)  NOT NULL,
+    type_small_big char(1)  NOT NULL,
+    description text  NOT NULL,
+    customizing_function varchar(50)  NOT NULL,
+    CONSTRAINT Challenge_pk PRIMARY KEY (id_challenge)
+);
+
 -- Table: Client
 CREATE TABLE Client (
     id_client int  NOT NULL,
-    username varchar(50)  NOT NULL,
+    username varchar(50)  NULL,
     name varchar(50)  NOT NULL,
     surname varchar(50)  NOT NULL,
     pesel varchar(11)  NOT NULL,
+    points int  NOT NULL,
     id_clients_mailing_address int  NOT NULL,
-    email varchar(50)  NOT NULL,
-    password text  NOT NULL,
+    email varchar(50)  NULL,
+    password text  NULL,
+    member_of_challenge boolean  NULL,
+    number_of_rooms int  NULL,
+    number_of_residents int  NULL,
     CONSTRAINT Client_pk PRIMARY KEY (id_client)
 );
 
 -- Table: Comment
 CREATE TABLE Comment (
-    id_comment int  NOT NULL,
+    id_comment BIGSERIAL,
     text text  NOT NULL,
     date_created timestamp  NOT NULL,
     id_post int  NOT NULL,
@@ -36,148 +50,172 @@ CREATE TABLE Comment (
     CONSTRAINT Comment_pk PRIMARY KEY (id_comment)
 );
 
+-- Table: CustomizedChallenge
+CREATE TABLE CustomizedChallenge (
+    id_customized_challenge BIGSERIAL,
+    id_client int  NOT NULL,
+    id_challenge int  NOT NULL,
+    is_done boolean  NOT NULL,
+    points_scored int  NOT NULL,
+    start_date timestamp  NULL,
+    end_date timestamp  NULL,
+    CONSTRAINT CustomizedChallenge_pk PRIMARY KEY (id_customized_challenge)
+);
+
+-- Table: Favourite
+CREATE TABLE Favourite (
+    id_like BIGSERIAL,
+    date_created timestamp  NOT NULL,
+    id_post int  NOT NULL,
+    id_author int  NOT NULL,
+    CONSTRAINT Favourite_pk PRIMARY KEY (id_like)
+);
+
+-- Table: Invoice
+CREATE TABLE Invoice (
+    id_invoice BIGSERIAL,
+    id_meter int  NOT NULL,
+    date_of_issue timestamp  NOT NULL,
+    amount_to_pay decimal(10,5)  NOT NULL,
+    used_energy decimal(10,5)  NOT NULL,
+    billing_period timestamp NOT NULL,
+    is_it_paid boolean NOT NULL,
+    CONSTRAINT Invoice_pk PRIMARY KEY (id_invoice)
+);
+
 -- Table: Meter
 CREATE TABLE Meter (
-    id_meter int  NOT NULL,
-    id_owner int  NOT NULL,
-    id_meters_place_address int  NOT NULL,
-    ranking_points int  NOT NULL,
+    id_meter BIGSERIAL,
+    id_client int  NOT NULL,
+    ppe varchar(18)  NOT NULL,
+    id_offer int  NOT NULL,
     CONSTRAINT Meter_pk PRIMARY KEY (id_meter)
 );
 
 -- Table: Offer
 CREATE TABLE Offer (
-    id_offer int  NOT NULL,
+    id_offer SERIAL,
     name varchar(50)  NOT NULL,
     tarrif varchar(50)  NOT NULL,
-    pv_installation char(1)  NOT NULL,
+    pv_installation boolean  NOT NULL,
+    kwh_price  decimal(7,5) NOT NULL,
     CONSTRAINT Offer_pk PRIMARY KEY (id_offer)
-);
-
--- Table: OfferForMeter
-CREATE TABLE OfferForMeter (
-    id_offer_for_meter int  NOT NULL,
-    id_offers_type int  NOT NULL,
-    id_meter int  NOT NULL,
-    start_date date  NOT NULL,
-    end_date date  NULL,
-    CONSTRAINT OfferForMeter_pk PRIMARY KEY (id_offer_for_meter)
 );
 
 -- Table: Post
 CREATE TABLE Post (
-    id_post int  NOT NULL,
+    id_post BIGSERIAL,
     text text  NOT NULL,
     date_created timestamp  NOT NULL,
     id_author int  NOT NULL,
     CONSTRAINT Post_pk PRIMARY KEY (id_post)
 );
 
--- Table: Favourite
-CREATE TABLE Favourite (
-    id_like int  NOT NULL,
-    date_created timestamp  NOT NULL,
-    id_author int  NULL,
-    id_post int  NULL,
-    CONSTRAINT Favourite_pk PRIMARY KEY (id_like)
-);
-
 -- Table: Reading
 CREATE TABLE Reading (
-    id_reading int  NOT NULL,
+    id_reading BIGSERIAL,
     time timestamp  NOT NULL,
-    used_energy decimal(2,0)  NOT NULL,
+    used_energy decimal(10,5)  NOT NULL,
     id_meter int  NOT NULL,
     CONSTRAINT Reading_pk PRIMARY KEY (id_reading)
 );
 
 -- foreign keys
--- Reference: Client_Address (table: Client)
-ALTER TABLE Client ADD CONSTRAINT Client_Address
+-- Reference: CustomizedChallenge_Client (table: CustomizedChallenge)
+ALTER TABLE CustomizedChallenge ADD CONSTRAINT CustomizedChallenge_Client
+    FOREIGN KEY (id_client)
+    REFERENCES Client (id_client)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: client_address (table: Client)
+ALTER TABLE Client ADD CONSTRAINT client_address
     FOREIGN KEY (id_clients_mailing_address)
     REFERENCES Address (id_address)  
     NOT DEFERRABLE 
     INITIALLY IMMEDIATE
 ;
 
--- Reference: Comment_Client (table: Comment)
-ALTER TABLE Comment ADD CONSTRAINT Comment_Client
+-- Reference: comment_client (table: Comment)
+ALTER TABLE Comment ADD CONSTRAINT comment_client
     FOREIGN KEY (id_author)
     REFERENCES Client (id_client)  
     NOT DEFERRABLE 
     INITIALLY IMMEDIATE
 ;
 
--- Reference: Comment_Post (table: Comment)
-ALTER TABLE Comment ADD CONSTRAINT Comment_Post
+-- Reference: comment_post (table: Comment)
+ALTER TABLE Comment ADD CONSTRAINT comment_post
     FOREIGN KEY (id_post)
     REFERENCES Post (id_post)  
     NOT DEFERRABLE 
     INITIALLY IMMEDIATE
 ;
 
--- Reference: Meter_Address (table: Meter)
-ALTER TABLE Meter ADD CONSTRAINT Meter_Address
-    FOREIGN KEY (id_meters_place_address)
-    REFERENCES Address (id_address)  
+-- Reference: customizedchallenge_challenge (table: CustomizedChallenge)
+ALTER TABLE CustomizedChallenge ADD CONSTRAINT customizedchallenge_challenge
+    FOREIGN KEY (id_challenge)
+    REFERENCES Challenge (id_challenge)  
     NOT DEFERRABLE 
     INITIALLY IMMEDIATE
 ;
 
--- Reference: Meter_Client (table: Meter)
-ALTER TABLE Meter ADD CONSTRAINT Meter_Client
-    FOREIGN KEY (id_owner)
+-- Reference: favourite_client (table: Favourite)
+ALTER TABLE Favourite ADD CONSTRAINT favourite_client
+    FOREIGN KEY (id_author)
     REFERENCES Client (id_client)  
     NOT DEFERRABLE 
     INITIALLY IMMEDIATE
 ;
 
--- Reference: OfferForMeter_Meter (table: OfferForMeter)
-ALTER TABLE OfferForMeter ADD CONSTRAINT OfferForMeter_Meter
+-- Reference: favourite_post (table: Favourite)
+ALTER TABLE Favourite ADD CONSTRAINT favourite_post
+    FOREIGN KEY (id_post)
+    REFERENCES Post (id_post)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: meter_client (table: Meter)
+ALTER TABLE Meter ADD CONSTRAINT meter_client
+    FOREIGN KEY (id_client)
+    REFERENCES Client (id_client)  
+    NOT DEFERRABLE 
+    INITIALLY IMMEDIATE
+;
+
+-- Reference: meter_invoice (table: Invoice)
+ALTER TABLE Invoice ADD CONSTRAINT meter_invoice
     FOREIGN KEY (id_meter)
     REFERENCES Meter (id_meter)  
     NOT DEFERRABLE 
     INITIALLY IMMEDIATE
 ;
 
--- Reference: OfferForMeter_Offer (table: OfferForMeter)
-ALTER TABLE OfferForMeter ADD CONSTRAINT OfferForMeter_Offer
-    FOREIGN KEY (id_offers_type)
+-- Reference: meter_offer (table: Meter)
+ALTER TABLE Meter ADD CONSTRAINT meter_offer
+    FOREIGN KEY (id_offer)
     REFERENCES Offer (id_offer)  
     NOT DEFERRABLE 
     INITIALLY IMMEDIATE
 ;
 
--- Reference: Post_Client (table: Post)
-ALTER TABLE Post ADD CONSTRAINT Post_Client
-    FOREIGN KEY (id_author)
-    REFERENCES Client (id_client)  
-    NOT DEFERRABLE 
-    INITIALLY IMMEDIATE
-;
-
--- Reference: Reading_Meter (table: Reading)
-ALTER TABLE Reading ADD CONSTRAINT Reading_Meter
+-- Reference: meter_reading (table: Reading)
+ALTER TABLE Reading ADD CONSTRAINT meter_reading
     FOREIGN KEY (id_meter)
     REFERENCES Meter (id_meter)  
     NOT DEFERRABLE 
     INITIALLY IMMEDIATE
 ;
 
--- Reference: Favourite_Client (table: Favourite)
-ALTER TABLE Favourite ADD CONSTRAINT Favourite_Client
+-- Reference: post_client (table: Post)
+ALTER TABLE Post ADD CONSTRAINT post_client
     FOREIGN KEY (id_author)
     REFERENCES Client (id_client)  
     NOT DEFERRABLE 
     INITIALLY IMMEDIATE
 ;
 
--- Reference: Favourite_Post (table: Favourite)
-ALTER TABLE Favourite ADD CONSTRAINT Favourite_Post
-    FOREIGN KEY (id_post)
-    REFERENCES Post (id_post)  
-    NOT DEFERRABLE 
-    INITIALLY IMMEDIATE
-;
-
 -- End of file.
+
