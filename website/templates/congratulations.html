@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Congratulations!</title>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-        <style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
         .badge-image {
             width: 300px;  
             height: 300px; 
@@ -19,36 +19,43 @@
             min-height: 100vh;
             background-color: white;
         }
+        body {
+            font-family: "Montserrat", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 200;
+            font-style: normal;
+        }
+        .btn-primary {
+            font-family: "Montserrat", sans-serif;
+            font-weight: 200;
+        }
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <button class="navbar-toggler" type="button"
-            data-bs-toggle="collapse" data-bs-target="#navbar"><span
-                class="navbar-toggler-icon"></span></span></button>
-    <div class="collapse navbar-collapse" id="navbar">
-        <div class="navbar-nav">
-            <a class="nav-item nav-link" href="/home">Home</a>
-            <a class="nav-item nav-link"
-                href="https://www.climateactionoxfordshire.org.uk/">Blog</a>
-            <a class="nav-item nav-link" href="/forum">Forum</a>
-            <a class="nav-item nav-link" href="/challenge">Game</a>
-            <a class="nav-item nav-link" href="/chart">Usage</a>
-            <a class="nav-item nav-link" href="/invoice">Invoices</a>
-            <a class="nav-item nav-link" href="/user/logout">Logout</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbar">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link" href="/home">Home</a>
+                <a class="nav-item nav-link" href="https://www.climateactionoxfordshire.org.uk/">Blog</a>
+                <a class="nav-item nav-link" href="/forum">Forum</a>
+                <a class="nav-item nav-link" href="/challenge">Game</a>
+                <a class="nav-item nav-link" href="/chart">Usage</a>
+                <a class="nav-item nav-link" href="/invoice">Invoices</a>
+                <a class="nav-item nav-link" href="/user/logout">Logout</a>
+            </div>
         </div>
+    </div>
+</nav>
+<div class="container mt-5 center-content">
+    <div class="jumbotron text-center center-content">
+        <h1 class="display-4">Congratulations, {{ username }}!</h1>
+        <p class="lead">You have earned the <strong>{{ badge_name }}</strong> ({{ points }} points)!</p>
+        <img src="{{ url_for('static', filename='images/badges/' + pic) }}" alt="badge" class="img-fluid badge-image">
+        <p>Keep up the great work!</p>
+        <a class="btn btn-primary btn-lg" href="{{ url_for('challenge.display_challenges') }}" role="button">Back to challenges</a>
     </div>
 </div>
-</nav>
-    <div class="container mt-5 center-content">
-        <div class="jumbotron text-center center-content">
-            <h1 class="display-4">Congratulations, {{ username }}!</h1>
-            <p class="lead">You have earned the <strong>{{ badge_name }}</strong> ({{ points }} points)!</p>
-            <img src="{{ url_for('static', filename='images/badges/' + pic) }}" alt="badge" class="img-fluid badge-image">
-            <p>Keep up the great work!</p>
-            <a class="btn btn-primary btn-lg" href="{{ url_for('challenge.display_challenges') }}" role="button">Back to challenges</a>
-        </div>
-    </div>
 </body>
 </html>

@@ -1,6 +1,18 @@
 """
-A view.
-Forum of MyEnergy users. They can create posts, comment and like.
+Forum View Module
+
+This module handles the functionalities of the forum where MyEnergy users can create posts,
+comment on posts, and like posts. It provides views for displaying posts, creating new posts,
+deleting posts, creating comments, deleting comments, and liking/unliking posts.
+
+Routes:
+    - display_forum: Displays all posts in the forum.
+    - create_post: Handles the creation of a new post.
+    - delete_post: Deletes a specific post.
+    - display_posts: Displays posts authored by a specific user.
+    - create_comment: Handles the creation of a comment on a post.
+    - delete_comment: Deletes a specific comment.
+    - like: Handles liking/unliking a post.
 """
 
 from flask import Blueprint, flash, jsonify, render_template, request, redirect, url_for

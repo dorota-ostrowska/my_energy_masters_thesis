@@ -1,7 +1,8 @@
 """
-A view.
+Challenge view module.
 User's challenges.
 """
+
 from datetime import datetime, timedelta
 import random
 from flask import Blueprint, flash, render_template, request, redirect, url_for
@@ -26,6 +27,7 @@ from sqlalchemy import func, extract
 
 
 challenge = Blueprint("challenge", __name__)
+RANKING: str = "ranking.html"
 
 
 def _get_unlocked_challenges(id_client: int) -> list[Challenge]:
@@ -121,7 +123,7 @@ def display_challenges():
         challenges_unlocked=_customize_task_desciptions(
             _get_unlocked_challenges(current_user.id_client),
         ),
-        current_user=current_user
+        current_user=current_user,
     )
 
 
@@ -303,7 +305,27 @@ def game_story():
 @login_required
 def finish_challenge(id_challenge):
     """
-    Mark the challenge as finished for the current user.
+    Mark the specified challenge as finished for the current user.
+
+    This function sets the 'is_done' attribute of the CustomizedChallenge
+    associated with the specified challenge and the current user to True,
+    indicating that the user has completed the challenge. It also assigns
+    a random badge to the user based on the type of challenge completed,
+    updates the user's total points accordingly, and redirects to the
+    congratulations page.
+
+    Args:
+        id_challenge (int): The ID of the challenge to mark as finished.
+
+    Returns:
+        Response: A redirect response to the congratulations page upon
+            successful completion of the challenge.
+
+    Raises:
+        FlashError: If the specified challenge is not found or has not
+            been started by the user, a flash message is displayed
+            indicating the error, and the user is redirected back to
+            the challenges page.
     """
     customized_challenge = CustomizedChallenge.query.filter_by(
         id_client=current_user.id_client, id_challenge=id_challenge
@@ -329,7 +351,19 @@ def finish_challenge(id_challenge):
 @login_required
 def congratulations(badge_name):
     """
-    Display the congratulations page with the earned badge.
+    Display a congratulations page with the earned badge information.
+
+    This function retrieves the points and picture associated with the
+    earned badge name and renders the congratulations template with
+    the badge name, points, picture of badge, and the username of the
+    current user.
+
+    Args:
+        badge_name (str): The name of the earned badge.
+
+    Returns:
+        rendered_template: HTML template displaying the congratulations
+            page with earned badge information.
     """
     points = 0
     pic = ""
@@ -351,7 +385,26 @@ def congratulations(badge_name):
 @login_required
 def resign_challenge(id_challenge):
     """
-    Resign from the challenge for the current user.
+    Resign from the specified challenge for the current user.
+
+    This function deletes the CustomizedChallenge entry associated
+    with the specified challenge and the current user from the database,
+    indicating that the user has chosen to resign from the challenge.
+    Upon successful resignation, a success flash message is displayed,
+    and the user is redirected back to the challenges page.
+
+    Args:
+        id_challenge (int): The ID of the challenge to resign from.
+
+    Returns:
+        Response: A redirect response to the challenges page upon
+            successful resignation from the challenge.
+
+    Raises:
+        FlashError: If the specified challenge is not found or has not
+            been started by the user, a flash message is displayed
+            indicating the error, and the user is redirected back to
+            the challenges page.
     """
     customized_challenge = CustomizedChallenge.query.filter_by(
         id_client=current_user.id_client, id_challenge=id_challenge
@@ -366,6 +419,26 @@ def resign_challenge(id_challenge):
 
 
 def get_random_badge(ch_type: str):
+    """
+    Retrieve a random badge based on the type of challenge.
+
+    This function selects a random badge from the list of all badges
+    weighted by the randomness factor associated with the type of
+    challenge (small or big).
+
+    Args:
+        ch_type (str): The type of challenge, either 'S' for small or
+            'B' for big.
+
+    Returns:
+        Badge: A randomly selected Badge object based on the type of
+            challenge.
+
+    Raises:
+        ValueError: If the specified challenge type is not 'S' or 'B',
+            a ValueError is raised indicating the incorrect challenge
+            type.
+    """
     if ch_type not in ["S", "B"]:
         raise ValueError("Challenge type must be either 'S' or 'B'")
     if ch_type == "S":
@@ -377,17 +450,39 @@ def get_random_badge(ch_type: str):
 
 
 def get_challenge_type(id_challenge: int) -> str:
+    """
+    Retrieve the type of challenge based on its ID.
+
+    This function retrieves the type of challenge (small or big) based
+    on the ID of the challenge from the database.
+
+    Args:
+        id_challenge (int): The ID of the challenge.
+
+    Returns:
+        str: The type of challenge, either 'S' for small or 'B' for big.
+    """
     challenge = Challenge.query.filter_by(id_challenge=id_challenge).first()
     return challenge.type_small_big
+
 
 @challenge.route("/daily-ranking")
 @login_required
 def daily_ranking():
     """
     Display the daily ranking of users based on points scored.
+
+    This route retrieves the daily ranking of users by summing the points scored
+    on the current day. It then renders the ranking template with the title
+    'Daily ranking of Energy Wizards 🪄' and the ranking data.
+
+    Returns:
+        rendered_template: HTML template displaying the daily ranking.
     """
     ranking = daily_points_ranking()
-    return render_template("ranking.html", ranking=ranking, title="Daily ranking of Energy Wizards 🪄")
+    return render_template(
+        RANKING, ranking=ranking, title="Daily ranking of Energy Wizards 🪄"
+    )
 
 
 @challenge.route("/weekly-ranking")
@@ -395,9 +490,18 @@ def daily_ranking():
 def weekly_ranking():
     """
     Display the weekly ranking of users based on points scored.
+
+    This route retrieves the weekly ranking of users by summing the points scored
+    in the current week. It then renders the ranking template with the title
+    'Weekly ranking of Energy Wizards 🧙‍♂️' and the ranking data.
+
+    Returns:
+        rendered_template: HTML template displaying the weekly ranking.
     """
     ranking = weekly_points_ranking()
-    return render_template("ranking.html", ranking=ranking, title="Weekly ranking of Energy Wizards 🧙‍♂️")
+    return render_template(
+        RANKING, ranking=ranking, title="Weekly ranking of Energy Wizards 🧙‍♂️"
+    )
 
 
 @challenge.route("/monthly-ranking")
@@ -405,9 +509,18 @@ def weekly_ranking():
 def monthly_ranking():
     """
     Display the monthly ranking of users based on points scored.
+
+    This route retrieves the monthly ranking of users by summing the points scored
+    in the current month. It then renders the ranking template with the title
+    'Monthly ranking of Energy Wizards 🧙' and the ranking data.
+
+    Returns:
+        rendered_template: HTML template displaying the monthly ranking.
     """
     ranking = monthly_points_ranking()
-    return render_template("ranking.html", ranking=ranking, title="Monthly ranking of Energy Wizards 🧙")
+    return render_template(
+        RANKING, ranking=ranking, title="Monthly ranking of Energy Wizards 🧙"
+    )
 
 
 @challenge.route("/overall-ranking")
@@ -415,58 +528,127 @@ def monthly_ranking():
 def overall_ranking():
     """
     Display the overall ranking of users based on points scored.
+
+    This route retrieves the overall ranking of users by summing the points scored
+    across all time. It then renders the ranking template with the title
+    'Overall ranking of Energy Wizards ✨' and the ranking data.
+
+    Returns:
+        rendered_template: HTML template displaying the overall ranking.
     """
     ranking = overall_points_ranking()
-    return render_template("ranking.html", ranking=ranking, title="Overall ranking of Energy Wizards ✨")
+    return render_template(
+        RANKING, ranking=ranking, title="Overall ranking of Energy Wizards ✨"
+    )
 
 
-def monthly_points_ranking():
+def monthly_points_ranking() -> list[tuple]:
+    """
+    Retrieve the monthly ranking of users based on points scored.
+
+    This function calculates the total points scored by each user in the current month
+    and returns a list of tuples containing the username and their total points,
+    ordered by the total points in descending order.
+
+    Returns:
+        list: A list of tuples with usernames and their total points for the current month.
+    """
     current_month = datetime.now().month
     current_year = datetime.now().year
-
-    monthly_ranking = db.session.query(
-        Client.username,
-        func.sum(CustomizedChallenge.points_scored).label('total_points')
-    ).join(CustomizedChallenge).filter(
-        extract('month', CustomizedChallenge.start_date) == current_month,
-        extract('year', CustomizedChallenge.start_date) == current_year
-    ).group_by(Client.username).order_by(func.sum(CustomizedChallenge.points_scored).desc()).all()
-
+    monthly_ranking = (
+        db.session.query(
+            Client.username,
+            func.sum(CustomizedChallenge.points_scored).label("total_points"),
+        )
+        .join(CustomizedChallenge)
+        .filter(
+            extract("month", CustomizedChallenge.start_date) == current_month,
+            extract("year", CustomizedChallenge.start_date) == current_year,
+        )
+        .group_by(Client.username)
+        .order_by(func.sum(CustomizedChallenge.points_scored).desc())
+        .all()
+    )
     return monthly_ranking
 
-def overall_points_ranking():
-    # Oblicz ogólny ranking punktów dla wszystkich użytkowników
-    overall_ranking = db.session.query(
-        Client.username,
-        func.sum(CustomizedChallenge.points_scored).label('total_points')
-    ).join(CustomizedChallenge).group_by(Client.username).order_by(func.sum(CustomizedChallenge.points_scored).desc()).all()
 
+def overall_points_ranking() -> list[tuple]:
+    """
+    Retrieve the overall ranking of users based on points scored.
+
+    This function calculates the total points scored by each user across all time
+    and returns a list of tuples containing the username and their total points,
+    ordered by the total points in descending order.
+
+    Returns:
+        list: A list of tuples with usernames and their total points for all time.
+    """
+    overall_ranking = (
+        db.session.query(
+            Client.username,
+            func.sum(CustomizedChallenge.points_scored).label("total_points"),
+        )
+        .join(CustomizedChallenge)
+        .group_by(Client.username)
+        .order_by(func.sum(CustomizedChallenge.points_scored).desc())
+        .all()
+    )
     return overall_ranking
 
-def daily_points_ranking():
+
+def daily_points_ranking() -> list[tuple]:
+    """
+    Retrieve the daily ranking of users based on points scored.
+
+    This function calculates the total points scored by each user on the current day
+    and returns a list of tuples containing the username and their total points,
+    ordered by the total points in descending order.
+
+    Returns:
+        list: A list of tuples with usernames and their total points for the current day.
+    """
     current_date = datetime.now().date()
-
-    daily_ranking = db.session.query(
-        Client.username,
-        func.sum(CustomizedChallenge.points_scored).label('total_points')
-    ).join(CustomizedChallenge).filter(
-        extract('day', CustomizedChallenge.start_date) == current_date.day,
-        extract('month', CustomizedChallenge.start_date) == current_date.month,
-        extract('year', CustomizedChallenge.start_date) == current_date.year
-    ).group_by(Client.username).order_by(func.sum(CustomizedChallenge.points_scored).desc()).all()
-
+    daily_ranking = (
+        db.session.query(
+            Client.username,
+            func.sum(CustomizedChallenge.points_scored).label("total_points"),
+        )
+        .join(CustomizedChallenge)
+        .filter(
+            extract("day", CustomizedChallenge.start_date) == current_date.day,
+            extract("month", CustomizedChallenge.start_date) == current_date.month,
+            extract("year", CustomizedChallenge.start_date) == current_date.year,
+        )
+        .group_by(Client.username)
+        .order_by(func.sum(CustomizedChallenge.points_scored).desc())
+        .all()
+    )
     return daily_ranking
 
-def weekly_points_ranking():
+
+def weekly_points_ranking() -> list[tuple]:
+    """
+    Retrieve the weekly ranking of users based on points scored.
+
+    This function calculates the total points scored by each user in the current week
+    (from Monday to Sunday) and returns a list of tuples containing the username and
+    their total points, ordered by the total points in descending order.
+
+    Returns:
+        list: A list of tuples with usernames and their total points for the current week.
+    """
     current_date = datetime.now().date()
     start_of_week = current_date - timedelta(days=current_date.weekday())
     end_of_week = start_of_week + timedelta(days=6)
-
-    weekly_ranking = db.session.query(
-        Client.username,
-        func.sum(CustomizedChallenge.points_scored).label('total_points')
-    ).join(CustomizedChallenge).filter(
-        CustomizedChallenge.start_date.between(start_of_week, end_of_week)
-    ).group_by(Client.username).order_by(func.sum(CustomizedChallenge.points_scored).desc()).all()
-
+    weekly_ranking = (
+        db.session.query(
+            Client.username,
+            func.sum(CustomizedChallenge.points_scored).label("total_points"),
+        )
+        .join(CustomizedChallenge)
+        .filter(CustomizedChallenge.start_date.between(start_of_week, end_of_week))
+        .group_by(Client.username)
+        .order_by(func.sum(CustomizedChallenge.points_scored).desc())
+        .all()
+    )
     return weekly_ranking

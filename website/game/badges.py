@@ -1,3 +1,23 @@
+"""
+Badge module.
+
+This module defines badge classes representing achievements that users can earn by completing challenges.
+
+Attributes:
+    name (str): The name of the badge.
+    points (int): The number of points associated with the badge.
+    randomness_small_challenge (float): The randomness factor for small challenges.
+    randomness_big_challenge (float): The randomness factor for big challenges.
+    picture (str): The filename of the badge picture.
+
+Each badge class defines attributes such as name, points, randomness factors, and a picture filename.
+The `all_badges` list contains instances of all badge classes defined in the module, providing a convenient way
+to access and iterate over all available badges.
+
+Users can earn badges by completing challenges, and badges serve as visual representations of their achievements.
+"""
+
+
 class EmeraldLeaf:
     name = "Emerald Leaf"
     points = 1

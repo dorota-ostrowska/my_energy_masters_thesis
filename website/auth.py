@@ -1,6 +1,30 @@
 """
-A view.
-Authorization to MyEnergy service - login and register functions.
+Authentication and Authorization Module.
+
+This module provides views for user authentication and authorization, including login and registration functions.
+
+Functions:
+    login: View function for handling user login.
+    register: View function for user registration.
+    validate_registration_data: Validates registration data.
+    create_client: Creates a new client.
+    logout: View function for handling user logout.
+
+Attributes:
+    auth (Blueprint): Blueprint for authorization views.
+
+This module handles user authentication and authorization within the MyEnergy service. It includes views for user login, registration, and logout.
+
+The `login` function handles user login attempts. It verifies the provided username and password and logs in the user if the credentials are correct. If not, appropriate error messages are flashed.
+
+The `register` function handles user registration attempts. It validates the registration data, creates a new client, and logs in the user if the registration is successful.
+
+The `validate_registration_data` function validates the registration data provided by the user during registration. It checks for various validation errors such as existing username or email, password matching, and length requirements.
+
+The `create_client` function creates a new client based on the provided registration data.
+
+The `logout` function handles user logout, logging out the currently logged-in user and redirecting them to the home page.
+
 """
 
 from flask import Blueprint, render_template, redirect, url_for, request, flash

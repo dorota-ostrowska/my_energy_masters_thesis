@@ -23,6 +23,18 @@
             min-height: 100vh;
             background-color: white;
         }
+
+        body, h1, label, input {
+            font-family: "Montserrat", sans-serif;
+            font-optical-sizing: auto;
+            font-weight: 200;
+            font-style: normal;
+        }
+
+        .btn-primary {
+            font-family: "Montserrat", sans-serif;
+            font-weight: 200;
+        }
     </style>
 </head>
 <body>
@@ -56,6 +68,7 @@
         <button type="submit" class="btn btn-primary btn-lg" style="background-color: #006585; border-color: #006585;">Sumbit</button>
     </form>
     <img src="data:image/png;base64,{{ chart_data }}" alt="Energy consumption">
+    <br />
     <a class="btn btn-primary btn-lg" href="{{ url_for('home.display_home') }}" style="background-color: #006585; border-color: #006585;">Back</a>
     </div>
     </div>

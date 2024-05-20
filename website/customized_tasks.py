@@ -1,3 +1,25 @@
+"""
+This module contains functions that customize the content of challenges for users based
+on their location, household details, and current weather conditions. The primary goal
+is to provide personalized task descriptions that are relevant and useful for the users.
+
+Functions:
+    _check_weather(city: str) -> str:
+        Check the current weather conditions for drying laundry outside.
+        
+    get_task_dry_laundry_outside(description_template: str, user: str) -> str:
+        Generate a task description for drying laundry outside with weather information.
+        
+    _get_savings_on_bulbs(number_of_rooms: int) -> dict:
+        Calculate potential savings from replacing old-type bulbs with LED bulbs.
+        
+    get_task_replace_bulbs(description_template: str, user: str) -> str:
+        Generate a task description for replacing bulbs with calculated savings.
+        
+    get_task_sleep_mode(description_template: str, user: str) -> str:
+        Generate a task description for configuring sleep mode on devices.
+"""
+
 import requests
 from website.models import Address
 from website.secret import WEATHER_API_KEY
@@ -7,8 +29,20 @@ from website.configuration_guide import MAC, WINDOWS
 
 def _check_weather(city: str) -> str:
     """
-    Returns a string with information if the current weather conditions are OK to
-    dry user's washing ourside. It uses a city name to get this info.
+    Check the current weather conditions for drying laundry outside.
+
+    This function fetches the current weather data for a specified city using the
+    WeatherAPI. It checks the wind speed, humidity, and temperature to determine
+    if the conditions are suitable for drying laundry outside.
+
+    Args:
+        city (str): The name of the city to check the weather for.
+
+    Returns:
+        str: A message indicating whether the weather conditions are suitable
+             for drying laundry outside. The message includes the humidity, wind speed,
+             and temperature. If the weather conditions are not suitable, the message
+             provides the reason why.
     """
     base_url: str = "http://api.weatherapi.com/v1/current.json?"
     complete_url: str = f"{base_url}key={WEATHER_API_KEY}&q={city}"
@@ -44,7 +78,18 @@ def _check_weather(city: str) -> str:
 
 def get_task_dry_laundry_outside(description_template: str, user: str) -> str:
     """
-    Returns a task description with information on weather conditions in user's location.
+    Generate a task description for drying laundry outside with weather information.
+
+    This function fetches the user's city from the database, checks the current
+    weather conditions for that city, and returns a task description that includes
+    weather information.
+
+    Args:
+        description_template (str): The template for the task description.
+        user (str): The user object containing user details.
+
+    Returns:
+        str: A formatted task description with weather information.
     """
     address = (
         Address.query.filter_by(id_address=user.id_clients_mailing_address)
@@ -56,16 +101,18 @@ def get_task_dry_laundry_outside(description_template: str, user: str) -> str:
 
 def _get_savings_on_bulbs(number_of_rooms: int) -> dict:
     """
-    Returns a customized string for user with calculated savings on bulbs.
-    Calculates savings using a following folmula:
-    K[PLN] = P[W] * 0.001 * t[h] * pkwh[PLN/kWh],
-    where:
-    K - cost of energy consumed by a light source
-    P - power of a light source
-    t - light source operating time
-    pkwh - price of 1 kWh of electricity.
-    This function calculates savings taking into account the number of rooms.
-    It's personalized.
+    Calculate potential savings from replacing old-type bulbs with LED bulbs.
+
+    This function calculates the annual energy cost savings for a household
+    when replacing old-type (incandescent) bulbs with LED bulbs. The savings
+    are calculated based on the number of rooms in the household.
+
+    Args:
+        number_of_rooms (int): The number of rooms in the user's household.
+
+    Returns:
+        dict: A dictionary containing the cost details for old-type bulbs, LED bulbs,
+              and the savings for the household.
     """
     price_of_1kwh: int = 1  # PLN
     power_of_oldtype_bulb: int = 60  # W
@@ -92,15 +139,35 @@ def _get_savings_on_bulbs(number_of_rooms: int) -> dict:
 
 def get_task_replace_bulbs(description_template: str, user: str) -> str:
     """
-    Returns a task description.
-    It takes a customized string for user with calculated savings on bulbs too.
+    Generate a task description for replacing bulbs with calculated savings.
+
+    This function calculates the potential savings from replacing old-type bulbs
+    with LED bulbs based on the number of rooms in the user's household. It returns
+    a task description that includes these savings.
+
+    Args:
+        description_template (str): The template for the task description.
+        user (str): The user object containing user details, including the number of rooms.
+
+    Returns:
+        str: A formatted task description with savings information.
     """
     return description_template.format(**_get_savings_on_bulbs(user.number_of_rooms))
 
 
 def get_task_sleep_mode(description_template: str, user: str) -> str:
     """
-    Returns a task description.
+    Generate a task description for configuring sleep mode on devices.
+
+    This function returns a task description that includes links to guides
+    for configuring sleep mode on Windows and MAC devices.
+
+    Args:
+        description_template (str): The template for the task description.
+        user (str): The user object.
+
+    Returns:
+        str: A formatted task description with links to sleep mode configuration guides.
     """
     return description_template.format(
         link_guide=f"How to configure it? 🧐🤔 Windows 🖥️: {WINDOWS} MAC 🍎: {MAC}"

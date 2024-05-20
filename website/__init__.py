@@ -1,3 +1,22 @@
+"""
+Website initialization module.
+
+This module initializes the Flask application, configures database connection, and registers blueprints for different parts of the website.
+
+Functions:
+    create_app: Creates and configures the Flask application.
+
+Attributes:
+    app (Flask): The Flask application instance.
+    db (SQLAlchemy): The SQLAlchemy database instance.
+
+This module sets up the Flask application, including secret key configuration, database connection, and registration of blueprints for various parts of the website, such as home, authentication, forum, and challenge functionalities.
+
+The `create_app` function initializes the Flask app, registers blueprints, creates necessary database tables, configures login manager, and loads user information.
+
+It also provides access to the `app` and `db` objects, representing the Flask application instance and the SQLAlchemy database instance respectively, which can be used throughout the website.
+"""
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
