@@ -322,12 +322,6 @@ class Challenge(db.Model, UserMixin):
         "CustomizedChallenge", backref="customized_challenge"
     )
 
-    def __repr__(self):
-        return f'<Challenge "{self.name}">'
-
-    def get_id(self):
-        return self.id_challenge
-
 
 class CustomizedChallenge(db.Model, UserMixin):
     """
@@ -381,3 +375,4 @@ class Invoice(db.Model, UserMixin):
     used_energy = db.Column(db.Float)
     billing_period = db.Column(db.DateTime)
     is_it_paid = db.Column(db.Boolean)
+

@@ -75,9 +75,9 @@ def register():
     """
     View function for user registration.
 
-    If the request method is POST, the function attempts to register a new user
-    using the provided registration data. If the data is valid, a new client
-    is created, and the user is logged in, then redirected to the questionnaire page.
+    If the request method is PUT (POST), the function attempts to register a new user
+    using the provided registration data. If the data is valid, a new client in ME
+    is updated, and the user is logged in, then redirected to the questionnaire page.
     If there are validation errors, error messages are flashed to the user.
 
     If the request method is GET, the function renders the registration form.
