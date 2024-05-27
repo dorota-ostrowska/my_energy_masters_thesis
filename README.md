@@ -27,7 +27,7 @@ We are MyEnergy, more than just an electricity seller. Our mission is to empower
 
 ## Technologies 🛠
 
-- **Python 3.12**: The primary programming language used for application logic.
+- **Python 3.10**: The primary programming language used for application logic.
   
 - **Flask**: A lightweight web framework used for building MyEnergy web application.
   
