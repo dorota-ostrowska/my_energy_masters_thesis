@@ -1,8 +1,9 @@
 database_storage/
 .vscode
-thesis.docx
 venv/
 appconfig.json
 **/__pycache__/
 **/.DS_Store
 website/secret.py
+~$thesis.docx
+thesis.docx

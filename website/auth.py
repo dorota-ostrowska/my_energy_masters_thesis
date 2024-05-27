@@ -75,9 +75,9 @@ def register():
     """
     View function for user registration.
 
-    If the request method is POST, the function attempts to register a new user
-    using the provided registration data. If the data is valid, a new client
-    is created, and the user is logged in, then redirected to the questionnaire page.
+    If the request method is PUT (POST), the function attempts to register a new user
+    using the provided registration data. If the data is valid, a new client in ME
+    is updated, and the user is logged in, then redirected to the questionnaire page.
     If there are validation errors, error messages are flashed to the user.
 
     If the request method is GET, the function renders the registration form.
@@ -160,7 +160,7 @@ def create_client(client: Client, username: str, email: str, password: str) -> b
     try:
         client.username = username
         client.email = email
-        client.password = str(generate_password_hash(password, method="sha256"))
+        client.password = str(generate_password_hash(password, method="pbkdf2:sha256"))
         db.session.commit()
         return True
     except Exception:

@@ -289,6 +289,7 @@ class Offer(db.Model, UserMixin):
     name = db.Column(db.String(50))
     tarrif = db.Column(db.String(50))
     pv_installation = db.Column(db.Boolean)
+    kwh_price = db.Column(db.Float)
     meters = db.relationship("Meter", backref="meters_in_offer")
 
     def __repr__(self):
@@ -320,12 +321,6 @@ class Challenge(db.Model, UserMixin):
     customizedchallenges = db.relationship(
         "CustomizedChallenge", backref="customized_challenge"
     )
-
-    def __repr__(self):
-        return f'<Challenge "{self.name}">'
-
-    def get_id(self):
-        return self.id_challenge
 
 
 class CustomizedChallenge(db.Model, UserMixin):
