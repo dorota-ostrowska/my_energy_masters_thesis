@@ -160,7 +160,7 @@ def create_client(client: Client, username: str, email: str, password: str) -> b
     try:
         client.username = username
         client.email = email
-        client.password = str(generate_password_hash(password, method="sha256"))
+        client.password = str(generate_password_hash(password, method="pbkdf2:sha256"))
         db.session.commit()
         return True
     except Exception:
