@@ -9,6 +9,18 @@
             rel="stylesheet"
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
             crossorigin="anonymous" />
+        <style>
+            .inner-container {
+                margin: 20px;
+            }
+
+            body, h1 {
+                font-family: "Montserrat", sans-serif;
+                font-optical-sizing: auto;
+                font-weight: 200;
+                font-style: normal;
+            }
+        </style>
     </head>
 
     <body>
@@ -32,6 +44,7 @@
             </div>
         </div>
     </nav>
+    <div class="inner-container">
 
         <h1 align="center">{{username}}'s posts</h1>
         <br />
@@ -124,5 +137,6 @@
         </div>
         <br />
         {% endfor %}
+        </div>
     </body>
 </html>

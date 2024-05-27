@@ -25,16 +25,3 @@ jobs:
         run: |
           cd ..
           # flake8 --extend-ignore E203,W291,E402,W503 --max-line-length 120 --per-file-ignores="website/views.py:F401"
-  # sonarcloud:
-  #   name: build sonar cloud
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #     with:
-  #       # Disabling shallow clone is recommended for improving relevancy of reporting
-  #       fetch-depth: 0
-  #   - name: sonar cloud scan
-  #     uses: sonarsource/sonarcloud-github-action@master
-  #     env:
-  #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
