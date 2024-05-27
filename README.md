@@ -77,10 +77,10 @@ We are MyEnergy, more than just an electricity seller. Our mission is to empower
 
 9. Create meter readings in db (add appropriate dates).
 
-10. Run `app.py` file.
-
    ```bash
    python consumption_generator.py
    ```
+
+10. Run `app.py` file.
    
 [⬆ Back to top](#table-of-contents)
